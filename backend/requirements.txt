@@ -1,8 +1,9 @@
-__pycache__/
-*.pyc
-.env
-.idea/
-.vscode/
-*.ipynb_checkpoints
-.envrc
-data/
+fastapi==0.110.0
+uvicorn==0.29.0
+scikit-learn
+scipy==1.13.0
+pandas==2.2.2
+yfinance==0.2.36
+python-dotenv==1.0.1
+google-generativeai
+
