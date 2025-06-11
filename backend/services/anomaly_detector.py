@@ -1,9 +1,14 @@
 from sklearn.ensemble import IsolationForest
 import pandas as pd
+from sklearn.preprocessing import StandardScaler
 
-def detect_anomalies(df_ratios, contamination=0.05):
-    model = IsolationForest(n_estimators=100, contamination=contamination, random_state=42)
-    features = df_ratios.drop(columns=['Ticker.Symbol', 'Period.Ending'])
-    df_ratios['anomaly'] = model.fit_predict(features)
-    # anomaly = -1 (outlier), 1 (inlier)
-    return df_ratios
+
+def detect_anomalies(df: pd.DataFrame, features: list) -> pd.DataFrame:
+    df = df.copy()
+    scaler = StandardScaler()
+    df_scaled = scaler.fit_transform(df[features])
+    model = IsolationForest(contamination=0.1, random_state=42)
+    df["anomaly"] = model.fit_predict(df_scaled)
+    df["anomaly"] = df["anomaly"].map({1: 0, -1: 1})
+    return df
+

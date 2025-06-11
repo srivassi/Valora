@@ -16,7 +16,7 @@ ENDPOINTS = [
 ]
 INTERVALS = ["1d", "1w"]
 
-def safe_api_call(url, headers, params, retries=1, timeout=10):
+def safe_api_call(url, headers, params, retries=1, timeout=100):
     for attempt in range(retries + 1):
         try:
             response = requests.get(url, headers=headers, params=params, timeout=timeout)
