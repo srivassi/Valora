@@ -1,9 +1,30 @@
+# Byte-compiled / optimized / DLL files
 __pycache__/
-*.pyc
+*.py[cod]
+*$py.class
+
+# Environment variables
 .env
+.envrc
+
+# IDE settings
 .idea/
 .vscode/
+
+# Jupyter Notebook checkpoints
 *.ipynb_checkpoints
-.envrc
+
+# Local data files (can be removed if you want versioned data)
 data/
 
+# Logs and runtime files
+*.log
+*.pid
+
+# OS-specific
+.DS_Store
+Thumbs.db
+
+# Cache
+.cache/
+.pytest_cache/
