@@ -1,4 +1,4 @@
-from backend.services import chatbot_interface
+from backend.services import chatbot
 
 @app.post("/api/chat")
 def query_chatbot(prompt: str):
