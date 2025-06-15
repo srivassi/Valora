@@ -11,7 +11,7 @@ def run_ttest(df: pd.DataFrame, group_col: str, value_col: str, group1, group2):
 
 
 if __name__ == "__main__":
-    df = pd.read_csv("../../data/anomalies.csv")
+    df = pd.read_csv("../../../data/useful_database/anomalies.csv")
     df["year"] = pd.to_datetime(df["Period.Ending"]).dt.year
 
     results = []
@@ -30,7 +30,7 @@ if __name__ == "__main__":
     })
 
     os.makedirs("data", exist_ok=True)
-    with open("../../data/hypothesis_results.json", "w") as f:
+    with open("../../../data/hypothesis_results.json", "w") as f:
         json.dump(results, f, indent=2)
 
     print("✅ Hypothesis test results saved to data/hypothesis_results.json")

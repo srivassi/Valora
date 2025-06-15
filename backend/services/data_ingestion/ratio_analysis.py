@@ -32,7 +32,7 @@ def generate_ratios(file_path):
     return df_scaled
 
 if __name__ == "__main__":
-    df_scaled = generate_ratios("../../data/clean_fundamentals.csv")
+    df_scaled = generate_ratios("../../../data/clean_fundamentals.csv")
     df_scaled.to_csv("../../data/ratios.csv", index=False)
     print("Ratios saved to data/ratios.csv")
 

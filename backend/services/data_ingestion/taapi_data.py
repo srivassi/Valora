@@ -1,6 +1,6 @@
 import requests
 from backend.utils.ticker_loader import get_unique_tickers
-from backend.services.stock_data import is_ticker_active, ticker_redirects
+from backend.services.data_ingestion.stock_data import ticker_redirects
 import os
 import json
 import time
