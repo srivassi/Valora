@@ -99,7 +99,7 @@ def fetch_all_tickers_taapi(tickers=None, save: bool=True):
             inactive_tickers.append(original_ticker)
             continue
 
-        filepath = f"data/taapi/{ticker}.json"
+        filepath = f"../../data/taapi/{ticker}.json"
         if os.path.exists(filepath):
             print(f"[↻] Skipping {ticker}, TAAPI data already exists.")
             existing_tickers.append(ticker)
@@ -116,8 +116,8 @@ def fetch_all_tickers_taapi(tickers=None, save: bool=True):
         full_results[original_ticker] = data
 
         if save:
-            os.makedirs("data/taapi", exist_ok=True)
-            with open(f"data/taapi/{original_ticker}.json", "w") as f:
+            os.makedirs("../../data/taapi", exist_ok=True)
+            with open(f"../../data/taapi/{original_ticker}.json", "w") as f:
                 json.dump(data, f, indent=2)
 
         time.sleep(1)
@@ -130,14 +130,14 @@ def fetch_all_tickers_taapi(tickers=None, save: bool=True):
 
 
     if inactive_tickers:
-        with open("data/taapi/skipped_inactive_tickers.txt", "w") as f:
+        with open("../../data/taapi/skipped_inactive_tickers.txt", "w") as f:
             for t in inactive_tickers:
                 f.write(t + "\n")
         print(
             f"\n[INFO] Logged {len(inactive_tickers)} inactive/delisted tickers to 'data/taapi/skipped_inactive_tickers.txt'.")
 
     if taapi_failed_tickers:
-        with open("data/taapi/skipped_tickers.txt", "w") as f:
+        with open("../../data/taapi/skipped_tickers.txt", "w") as f:
             for t in taapi_failed_tickers:
                 f.write(t + "\n")
         print(f"\n[INFO] Logged {len(taapi_failed_tickers)} TAAPI failed tickers to 'data/taapi/skipped_tickers.txt'.")
@@ -153,7 +153,7 @@ def fetch_all_tickers_taapi(tickers=None, save: bool=True):
     return full_results, taapi_failed_tickers
 
 def load_skipped_tickers():
-    path = "data/taapi/skipped_tickers.txt"
+    path = "../../data/taapi/skipped_tickers.txt"
     if os.path.exists(path):
         with open(path, "r") as f:
             return [line.strip() for line in f.readlines()]
@@ -169,7 +169,7 @@ if __name__ == "__main__":
         _, skipped_again = fetch_all_tickers_taapi(tickers=taapi_failed_tickers)
 
         if skipped_again:
-            retry_path = "data/taapi/skipped_tickers_retry.txt"
+            retry_path = "../../data/taapi/skipped_tickers_retry.txt"
             with open(retry_path, "w") as f:
                 f.write(f"# Retry attempt on {time.strftime('%Y-%m-%d %H:%M:%S')}\n")
                 for t in skipped_again:
