@@ -1,9 +1,14 @@
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 
 export default function Chatbot() {
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
+  const bottomRef = useRef(null);
+
+  useEffect(() => {
+    bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [messages]);
 
   const sendMessage = async () => {
     if (!input.trim()) return;
@@ -35,20 +40,26 @@ export default function Chatbot() {
   return (
     <div className="max-w-2xl mx-auto p-4 border rounded-xl shadow bg-white mt-6">
       <h2 className="text-2xl font-semibold mb-4 text-center">🤖 Gemini Chatbot</h2>
-      <div className="h-64 overflow-y-auto border p-3 mb-4 bg-gray-50 rounded space-y-2">
+
+      <div className="h-[28rem] overflow-y-auto border p-4 mb-4 bg-gray-50 rounded space-y-4">
         {messages.map((msg, i) => (
-          <div key={i} className={`text-sm ${msg.role === 'user' ? 'text-right' : 'text-left'}`}>
-            <span
-              className={`inline-block px-3 py-2 rounded-xl ${
-                msg.role === 'user' ? 'bg-blue-100' : 'bg-gray-200'
+          <div
+            key={i}
+            className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
+          >
+            <div
+              className={`px-4 py-3 rounded-xl whitespace-pre-wrap break-words max-w-[75%] ${
+                msg.role === 'user' ? 'bg-blue-100 text-right' : 'bg-gray-200 text-left'
               }`}
             >
               {msg.content}
-            </span>
+            </div>
           </div>
         ))}
         {loading && <div className="text-gray-500 text-sm">Gemini is thinking...</div>}
+        <div ref={bottomRef} />
       </div>
+
       <div className="flex">
         <input
           value={input}
