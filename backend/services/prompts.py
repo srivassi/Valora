@@ -20,9 +20,17 @@ Interpret these results. Is the change statistically significant? What might exp
 """
 
 RATIO_SUMMARY_TEMPLATE = """
-Below are the financial ratios for {ticker} over the last 3 years:
+You are a financial analyst tasked with reviewing Apple Inc. (AAPL)'s key financial ratios over the past 3 years.
+
+Below is a summary of its liquidity, profitability, leverage, and efficiency ratios:
 
 {ratios_summary}
 
-Please evaluate the company's financial health and performance trends based on these ratios.
+Instructions:
+- Identify trends (improving, declining, or stable) across the years
+- Highlight any strengths, weaknesses, or red flags
+- Provide a 1-paragraph overall assessment of Apple's financial health and performance
+- Use bullet points where helpful
+- Keep the tone analytical but concise, as if writing for an investor report
 """
+

@@ -1,28 +1,26 @@
+import sys
+import os
 import pandas as pd
-from backend.services.chatbot_interface import get_chat_response
+
+# Add project root so we can use backend imports
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../..")))
+
+# Import Gemini chat function and prompt templates
+from backend.services.chat_interface import get_chat_response
 from backend.services.prompt_generator import (
-    generate_anomaly_prompt,
-    generate_hypothesis_prompt,
     generate_ratio_prompt
 )
 
-df_anomalies = pd.read_csv("sample_anomalies.csv")
-prompt = generate_anomaly_prompt(df_anomalies)
-print("Anomaly Prompt:\n", prompt)
-print("Gemini Response:\n", get_chat_response(prompt))
+# Import your ratio generator
+from backend.services.data_ingestion.ratio_analysis import generate_ratios
 
-hypo_result = {
-    'year1_mean': 0.15,
-    'year2_mean': 0.10,
-    't_statistic': 2.34,
-    'p_value': 0.03,
-    'significant': True
-}
-prompt = generate_hypothesis_prompt(hypo_result, ticker="AAPL", year1="2019", year2="2021")
-print("\nHypothesis Prompt:\n", prompt)
-print("Gemini Response:\n", get_chat_response(prompt))
+# === Load ratios from clean_fundamentals.csv ===
+ratios_df = generate_ratios(r"C:\Users\priya\OneDrive\Desktop\tcs\Valora\data\clean_fundamentals.csv")
 
-df_ratios = pd.read_csv("sample_ratios.csv")
-prompt = generate_ratio_prompt("AAPL", df_ratios)
-print("\nRatio Prompt:\n", prompt)
-print("Gemini Response:\n", get_chat_response(prompt))
+# === Generate a prompt for a company ===
+ticker = "AAPL"  # Replace with a ticker you know exists in your CSV
+prompt = generate_ratio_prompt(ticker, ratios_df)
+
+# === Print prompt and Gemini's response ===
+print("\n📊 Ratio Prompt:\n", prompt)
+print("\n🤖 Gemini Response:\n", get_chat_response(prompt))
