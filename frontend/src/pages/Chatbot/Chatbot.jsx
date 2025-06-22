@@ -1,69 +1,126 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import './chatbot.css';
 
 export default function Chatbot() {
+  const navigate = useNavigate();
+  const [expanded, setExpanded] = useState(false);
   const [messages, setMessages] = useState([]);
-  const [input, setInput] = useState('');
-  const [loading, setLoading] = useState(false);
+  const [inputText, setInputText] = useState('');
+  const [hasStarted, setHasStarted] = useState(false);
 
-  const sendMessage = async () => {
-    if (!input.trim()) return;
+  const handleKeyDown = async (e) => {
+      if (e.key === 'Enter' && inputText.trim() !== '') {
+          const userMsg = { sender: 'user', text: inputText.trim() };
+          setMessages((prev) => [...prev, userMsg]);
+          setInputText('');
+          setHasStarted(true);
 
-    const userMsg = { role: 'user', content: input };
-    setMessages((prev) => [...prev, userMsg]);
-    setInput('');
-    setLoading(true);
+          // Determine prompt_type based on user input
+            let promptType = 'overall_analysis'; // Default
+            const lowerInput = inputText.toLowerCase();
+            if (lowerInput.includes('anomaly')) {
+                promptType = 'anomalies';
+            } else if (lowerInput.includes('hypothesis')) {
+                promptType = 'hypothesis';
+            } else if (lowerInput.includes('financial')) {
+                promptType = 'financials';
+            } else if (lowerInput.includes('taapi')) {
+                promptType = 'taapi';
+            } else if (lowerInput.includes('stock')) {
+                promptType = 'stock_data';
+            } else if (lowerInput.includes('historical')) {
+                promptType = 'historical_features';
+            }
 
-    try {
-      const res = await fetch('http://localhost:8000/chat', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ message: input }),
-      });
-      const data = await res.json();
-      const botMsg = { role: 'bot', content: data.reply };
-      setMessages((prev) => [...prev, botMsg]);
-    } catch (err) {
-      setMessages((prev) => [
-        ...prev,
-        { role: 'bot', content: 'Error: Could not connect to chatbot.' },
-      ]);
-    } finally {
-      setLoading(false);
-    }
+          try {
+              const res = await fetch('http://localhost:8000/chat', {
+                  method: 'POST',
+                  headers: {'Content-Type': 'application/json'},
+                  body: JSON.stringify({
+                      prompt_type: promptType,
+                      ticker: inputText.trim()
+                  }),
+              });
+              const data = await res.json();
+              const botMsg = {sender: 'bot', text: data.reply};
+              setMessages((prev) => [...prev, botMsg]);
+          } catch (err) {
+              setMessages((prev) => [
+                  ...prev,
+                  {sender: 'bot', text: 'Error: Could not reach backend.'}
+              ]);
+          }
+      }
   };
 
+  // new chat btn + reset everything
+    const handleNewChat = () => {
+        setMessages([]);
+        setHasStarted(false);
+        setInputText('');
+    };
+
+
   return (
-    <div className="max-w-2xl mx-auto p-4 border rounded-xl shadow bg-white mt-6">
-      <h2 className="text-2xl font-semibold mb-4 text-center">🤖 Gemini Chatbot</h2>
-      <div className="h-64 overflow-y-auto border p-3 mb-4 bg-gray-50 rounded space-y-2">
-        {messages.map((msg, i) => (
-          <div key={i} className={`text-sm ${msg.role === 'user' ? 'text-right' : 'text-left'}`}>
-            <span
-              className={`inline-block px-3 py-2 rounded-xl ${
-                msg.role === 'user' ? 'bg-blue-100' : 'bg-gray-200'
-              }`}
-            >
-              {msg.content}
-            </span>
-          </div>
-        ))}
-        {loading && <div className="text-gray-500 text-sm">Gemini is thinking...</div>}
-      </div>
-      <div className="flex">
-        <input
-          value={input}
-          onChange={(e) => setInput(e.target.value)}
-          onKeyDown={(e) => e.key === 'Enter' && sendMessage()}
-          placeholder="Type a message..."
-          className="flex-1 border px-3 py-2 rounded-l-md focus:outline-none"
-        />
-        <button
-          onClick={sendMessage}
-          className="bg-blue-600 text-white px-4 rounded-r-md hover:bg-blue-700"
-        >
-          Send
-        </button>
-      </div>
-    </div>
-  );
+        <div className="chatbot-page">
+
+            {/* sidebar */}
+            <aside className={`sidebar ${expanded ? 'expanded' : ''}`}>
+                <div className="sidebar-top">
+                    <button onClick={() => setExpanded(!expanded)}>
+                        ☰ {expanded && <span className="btn-text">Menu</span>}
+                    </button>
+                    <button onClick={handleNewChat}>
+                        ＋ {expanded && <span className="btn-text">New Chat</span>}
+                    </button>
+                </div>
+                <div className="sidebar-bottom">
+                    <button>
+                        ⚙ {expanded && <span className="btn-text">Settings</span>}
+                    </button>
+                </div>
+            </aside>
+
+            {/* main content */}
+            <main className="main-content">
+                <header className="chatbot-header">
+                    <h2 className="valora-link" onClick={() => navigate('/')}>
+                        Valora
+                    </h2>
+                    <button className="profiles-button">Company Profiles</button>
+                </header>
+
+                <section className="chatbot-body">
+                    {!hasStarted && <h1>Hello, User</h1>}
+
+                    {/* show chat display if started */}
+                    {hasStarted && (
+                        <div className="chat-display">
+                            {messages.map((msg, index) => (
+                                <div
+                                    key={index}
+                                    className={`chat-message ${msg.sender === 'user' ? 'user-msg' : 'bot-msg'}`}
+                                >
+                                    {msg.text}
+                                </div>
+                            ))}
+                        </div>
+                    )}
+
+                    {/* input box */}
+                    <div className="input-box">
+                        <input
+                            type="text"
+                            placeholder="Ask me anything..."
+                            className="chat-input"
+                            value={inputText}
+                            onChange={(e) => setInputText(e.target.value)}
+                            onKeyDown={handleKeyDown}
+                        />
+                    </div>
+                </section>
+            </main>
+        </div>
+    );
 }
