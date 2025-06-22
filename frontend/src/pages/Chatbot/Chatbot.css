@@ -112,8 +112,12 @@
     flex-direction: column;
     justify-content: flex-end;
     align-items: center;
-    padding: 2rem;
+    height: 100%;
     position: relative;
+    overflow: hidden;
+    padding: 1.5rem 1rem;
+    gap: 1rem;
+    box-sizing: border-box;
 }
 
 /*greeting*/
@@ -128,17 +132,19 @@
 }
 
 /*chat input box*/
-.input-box {
+.chat-scroll-container {
+    flex: 1;
     width: 100%;
     max-width: 700px;
-    margin-bottom: 2rem;
-    background-color: #f1f1f1;
-    border-radius: 25px;
-    /*border: 1px solid #735a8c;*/
-    box-shadow: 0 2px 12px #735a8c;
-    padding: 0.5rem 1rem;
+    overflow-y: auto;
+    padding: 1rem;
     display: flex;
-    align-items: center;
+    flex-direction: column;
+    gap: 12px;
+    background: none;
+    /*box-shadow: 0 2px 12px #ccc;*/
+    border-radius: 15px;
+    box-sizing: border-box;
 }
 
 .chat-input {
@@ -157,16 +163,17 @@
 .chat-display {
     width: 100%;
     max-width: 700px;
-    min-height: 400px;
-    margin-bottom: 2.5rem;
-    padding: 1rem;
-    /*background: #fff;*/
-    border-radius: 15px;
-    /*box-shadow: 0 2px 12px #ccc;*/
+    flex-grow: 1;
     overflow-y: auto;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    border-radius: 15px;
     display: flex;
     flex-direction: column;
     gap: 12px;
+    background: #fff;
+    box-shadow: 0 2px 12px #ccc;
+    box-sizing: border-box;
 }
 
 /*chat message common*/
@@ -186,19 +193,29 @@
     border-bottom-right-radius: 4px;
 }
 
-/*bot messages on left, grey bg
+/*bot messages on left, grey bg*/
 .bot-msg {
     background-color: #e0e0e0;
     color: #000;
     align-self: flex-start;
     border-bottom-left-radius: 4px;
 }
-*/
+
 
 .input-box {
+    width: 100%;
+    max-width: 700px;
+    background-color: #f1f1f1;
+    border-radius: 25px;
+    box-shadow: 0 2px 12px #735a8c;
+    padding: 0.5rem 1rem;
     display: flex;
     align-items: center;
-    gap: 8px;
+    box-sizing: border-box;
+    position: sticky;
+    bottom: 0;
+    margin-top: auto;
+    z-index: 2;
 }
 
 .send-button {
@@ -216,25 +233,10 @@
     background-color: #5a3f6e;
 }
 
-.bot-msg {
-  text-align: left;
-  background: #f0f0f0;
-  color: #222;
-  border-radius: 12px;
-  margin: 8px 0;
-  padding: 10px 16px;
-  max-width: 60%;
-  align-self: flex-start;
+.chat-scroll-container::-webkit-scrollbar {
+    display: none;
 }
-.user-msg {
-  text-align: right;
-  background: #007bff;
-  color: #fff;
-  border-radius: 12px;
-  margin: 8px 0 8px auto;
-  padding: 10px 16px;
-  max-width: 60%;
-  align-self: flex-end;
-}
+
+
 
 

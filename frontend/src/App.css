@@ -55,7 +55,7 @@ html {
   transition: all 0.3s ease;
 }
 
-.navbar a.active {
+.navbar a.hover {
   background-color: #C6B4D9;
   color: #000;
 }

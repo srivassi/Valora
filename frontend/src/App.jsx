@@ -1,6 +1,7 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, useNavigate } from 'react-router-dom';
 import ChatbotPage from './pages/Chatbot/Chatbot';
+import CompanyProfile from './pages/CompanyProfile/CompanyProfile';
 import './App.css';
 
 function LandingPage() {
@@ -39,7 +40,7 @@ function LandingPage() {
                                 Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod
                                 tempor incididunt ut labore et dolore magna aliqua.
                             </p>
-                            <button className="profile-btn">
+                            <button className="profile-btn" onClick={() => navigate('/companyprofile')}>
                                 &#10140; More Company Profiles
                             </button>
                         </div>
@@ -93,6 +94,7 @@ function App() {
             <Routes>
                 <Route path="/" element={<LandingPage />} />
                 <Route path="/chatbot" element={<ChatbotPage />} />
+                <Route path="/companyprofile" element={<CompanyProfile />} />
             </Routes>
         </Router>
     );

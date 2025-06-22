@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './chatbot.css';
 
@@ -8,6 +8,13 @@ export default function Chatbot() {
   const [messages, setMessages] = useState([]);
   const [inputText, setInputText] = useState('');
   const [hasStarted, setHasStarted] = useState(false);
+  const chatEndRef = useRef(null);
+
+  useEffect(() => {
+        if (chatEndRef.current) {
+            chatEndRef.current.scrollIntoView({ behavior: 'smooth' });
+        }
+    }, [messages]);
 
   const handleKeyDown = async (e) => {
       if (e.key === 'Enter' && inputText.trim() !== '') {
@@ -88,25 +95,25 @@ export default function Chatbot() {
                     <h2 className="valora-link" onClick={() => navigate('/')}>
                         Valora
                     </h2>
-                    <button className="profiles-button">Company Profiles</button>
+                    <button className="profiles-button" onClick={() => navigate('/companyprofile')}>
+                        Company Profiles
+                    </button>
                 </header>
 
                 <section className="chatbot-body">
                     {!hasStarted && <h1>Hello, User</h1>}
 
-                    {/* show chat display if started */}
-                    {hasStarted && (
-                        <div className="chat-display">
-                            {messages.map((msg, index) => (
-                                <div
-                                    key={index}
-                                    className={`chat-message ${msg.sender === 'user' ? 'user-msg' : 'bot-msg'}`}
-                                >
-                                    {msg.text}
-                                </div>
-                            ))}
-                        </div>
-                    )}
+                    <div className="chat-scroll-container">
+                        {messages.map((msg, index) => (
+                            <div
+                                key={index}
+                                className={`chat-message ${msg.sender === 'user' ? 'user-msg' : 'bot-msg'}`}
+                            >
+                                {msg.text}
+                            </div>
+                        ))}
+                        <div ref={chatEndRef} />
+                    </div>
 
                     {/* input box */}
                     <div className="input-box">
@@ -118,9 +125,10 @@ export default function Chatbot() {
                             onChange={(e) => setInputText(e.target.value)}
                             onKeyDown={handleKeyDown}
                         />
+                        <button className="send-button" onClick={handleKeyDown}>Send</button>
                     </div>
                 </section>
             </main>
         </div>
-    );
+  );
 }
