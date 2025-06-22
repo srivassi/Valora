@@ -1,6 +1,7 @@
 import os
 import pandas as pd
 import json
+import numpy as np
 
 USEFUL_DB = os.path.join(os.path.dirname(__file__), "../../data/useful_database")
 
@@ -49,11 +50,14 @@ def build_company_data():
         taapi = load_taapi_results(ticker)
         stock = load_stock_data(ticker)
         hist_features = load_historical_features(ticker)
+        stock_records = stock.replace({np.nan: None}).to_dict(orient="records") if not stock.empty else []
+        hist_records = hist_features.replace({np.nan: None}).to_dict(
+            orient="records") if not hist_features.empty else []
         companies[ticker] = {
             "financials": company_data,
             "taapi": taapi,
-            "stock_data": stock.to_dict(orient="records") if not stock.empty else [],
-            "historical_features": hist_features.to_dict(orient="records") if not hist_features.empty else []
+            "stock_data": stock_records,
+            "historical_features": hist_records,
         }
     return companies
 
