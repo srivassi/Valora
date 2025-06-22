@@ -52,7 +52,7 @@ def map_invalid_tickers(ticker_list) -> list:
 
 
 
-# if __name__ == "__main__":
-#     tickers = get_unique_tickers()
-#     print(f"✅ Found {len(tickers)} unique tickers:")
-#     print(tickers)
+if __name__ == "__main__":
+    tickers = get_unique_tickers()
+    print(f"✅ Found {len(tickers)} unique tickers:")
+    print(tickers)

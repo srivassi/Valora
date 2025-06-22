@@ -15,11 +15,11 @@ def generate_ratios(file_path):
         'asset_turnover', 'inventory_turnover'
     ]
 
-    df_ratios = df[ratio_cols].dropna()
+    df_ratios = df[ratio_cols]
 
     # Replace inf/-inf with NaN and drop remaining invalid rows
     df_ratios.replace([np.inf, -np.inf], np.nan, inplace=True)
-    df_ratios.dropna(inplace=True)
+    df_ratios = df_ratios.fillna(np.nan)
 
     # Scale the financial ratios
     scaler = StandardScaler()
