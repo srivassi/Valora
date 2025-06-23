@@ -6,7 +6,7 @@ import datetime
 import pandas as pd
 from backend.utils.ticker_loader import get_unique_tickers
 
-DATA_DIR = "../../../data/useful_database/stock_data"
+DATA_DIR = "backend/data/useful_database/stock_data"
 
 ticker_redirects = {
     "FB": "META", "PCLN": "BKNG", "YHOO": None, "CELG": "BMY",
@@ -91,5 +91,3 @@ def fetch_all_valid_tickers_data(start="2018-01-01", end="2024-12-31"):
 
 if __name__ == "__main__":
     fetch_all_valid_tickers_data()
-
-

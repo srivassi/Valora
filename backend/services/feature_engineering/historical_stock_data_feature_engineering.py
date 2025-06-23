@@ -4,7 +4,7 @@ import numpy as np
 from sklearn.preprocessing import StandardScaler
 from sklearn.ensemble import IsolationForest
 
-DATA_DIR = "../../../data/useful_database/stock_data"
+DATA_DIR = "backend/data/useful_database/stock_data"
 
 def compute_rsi(series, window=14):
     delta = series.diff()
