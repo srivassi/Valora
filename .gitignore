@@ -14,9 +14,6 @@ __pycache__/
 # Jupyter Notebook checkpoints
 *.ipynb_checkpoints
 
-# Local data files (can be removed if you want versioned data)
-data/
-
 # Logs and runtime files
 *.log
 *.pid
