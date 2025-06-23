@@ -1,56 +1,57 @@
-RATIO_SUMMARY_TEMPLATE = """
-You are a financial analyst tasked with reviewing the key financial ratios for {ticker} over the past 3 years.
+# prompts.py
 
-Here is a summary of its liquidity, profitability, leverage, and efficiency metrics:
+RATIO_SUMMARY_TEMPLATE = """
+You are acting as a senior financial analyst. Your task is to evaluate {ticker}'s financial performance over the past 3 years based on the following metrics:
 
 {ratios_summary}
 
-Please:
-- Identify any observable trends (e.g., improving, declining, or stable)
-- Highlight key financial strengths, weaknesses, or red flags
-- Summarize the overall financial health and recent performance in 2–3 sentences
-- Use bullet points where appropriate
-- Keep the tone clear, concise, and suitable for an investor report
+Your analysis should:
+- Identify and comment on observable trends (e.g., consistent growth, sudden declines, volatility)
+- Flag any strengths (e.g., high margins, strong liquidity) or concerns (e.g., rising debt, falling efficiency)
+- Offer a 2–3 sentence summary of overall financial health
+- Format key findings using bullet points for readability
+- Maintain a clear, formal, and investor-facing tone
 """
 
 ANOMALY_TEMPLATE = """
-You are a financial analyst reviewing companies flagged for anomalies in their financial statements.
+You are a financial analyst reviewing flagged anomalies in company financial statements.
 
-The following entries have been marked as anomalous compared to the rest of the dataset:
+Here are the companies and periods where anomalies were detected:
 
 {anomaly_summary}
 
-Instructions:
-- Briefly explain what might cause such anomalies (e.g., sudden drop in revenue, sharp rise in debt)
-- Suggest what investors should investigate or be cautious about
-- Write in a concise, professional tone
+Please:
+- Identify what may have triggered these anomalies (e.g., sharp drop in revenue, increased leverage)
+- Suggest whether these anomalies may indicate poor financial management, market conditions, or accounting issues
+- Recommend what investors should pay closer attention to
+- Present your findings clearly and professionally
 """
 
 HYPOTHESIS_TEMPLATE = """
-A hypothesis test was conducted to evaluate changes in net margin for the company {ticker} between two periods: {year1} and {year2}.
+A hypothesis test was performed to assess changes in net margin for {ticker} between two periods: {year1} and {year2}.
 
-Summary of results:
+Summary of the statistical test:
 - Mean Net Margin in {year1}: {mean1:.2f}
 - Mean Net Margin in {year2}: {mean2:.2f}
 - t-statistic: {t_statistic:.2f}
 - p-value: {p_value:.4f}
 
-Instructions:
-- Interpret whether this change appears statistically significant
-- Suggest what factors could contribute to the difference in performance
-- Provide your explanation in a brief and analytical format
+Your response should:
+- Explain whether the change is statistically significant based on the p-value
+- Offer potential reasons for the difference (e.g., operational efficiency, market conditions)
+- Include a concise conclusion in 2–3 lines
 """
 
 COMPARE_TEMPLATE = """
-You are a financial analyst comparing two companies: {ticker1} and {ticker2}.
+You are a financial analyst comparing the fundamentals of two companies: {ticker1} and {ticker2}.
 
-Below is a summary of their key financial ratios and historical returns:
+Here is a summary of their most recent financial ratios and performance metrics:
 
 {comparison_summary}
 
-Instructions:
-- Compare liquidity, profitability, market cap, and returns
-- Point out which company shows stronger fundamentals
-- Write in a concise, investor-facing tone
-- Use bullet points and a short paragraph summary
+Please:
+- Compare both companies in terms of liquidity, profitability, leverage, and efficiency
+- Identify which company demonstrates stronger overall fundamentals
+- Write an investor-friendly summary with clear, bullet-point takeaways and a short conclusion
 """
+

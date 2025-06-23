@@ -21,20 +21,18 @@ from backend.services.company_data_store import load_company_names
 from backend.utils.ticker_loader import get_unique_tickers
 from backend.services.api.company_data_api import router as company_data_router
 
-# === Load Gemini API Key ===
+
+# === Gemini Setup ===
 load_dotenv(find_dotenv())
 api_key = os.getenv("GEMINI_API_KEY")
-
 if not api_key:
     raise ValueError("❌ GEMINI_API_KEY is missing")
-
 genai.configure(api_key=api_key)
 model = genai.GenerativeModel("models/gemini-2.5-flash-preview-05-20")
 
-# === Setup FastAPI ===
+# === FastAPI Setup ===
 app = FastAPI()
 app.include_router(company_data_router)
-
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -42,70 +40,67 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# === Build mappings ===
+# === Load Company Data ===
 company_list = load_company_names()
 symbol_to_name = {item['symbol'].upper(): item['name'] for item in company_list}
 name_to_symbol = {item['name'].lower(): item['symbol'].upper() for item in company_list}
 valid_tickers = set(get_unique_tickers())
-
-# === API Base URL for async fetches ===
 API_BASE = "http://localhost:8000"
 
-async def fetch_company_data(ticker, data_type):
-    async with httpx.AsyncClient() as client:
-        url = f"{API_BASE}/company/{ticker}/{data_type}"
-        resp = await client.get(url)
-        return resp.json()
-
-def resolve_ticker(user_input):
-    input_upper = user_input.upper()
-    input_lower = user_input.lower()
-    if input_upper in valid_tickers:
-        return input_upper
-    if input_lower in name_to_symbol:
-        ticker = name_to_symbol[input_lower]
-        if ticker in valid_tickers:
-            return ticker
+# === Utility Functions ===
+def resolve_ticker(user_input: str) -> str:
+    upper = user_input.upper()
+    lower = user_input.lower()
+    if upper in valid_tickers:
+        return upper
+    if lower in name_to_symbol and name_to_symbol[lower] in valid_tickers:
+        return name_to_symbol[lower]
     for name, symbol in name_to_symbol.items():
-        if input_lower in name and symbol in valid_tickers:
+        if lower in name and symbol in valid_tickers:
             return symbol
     return None
 
-def extract_possible_ticker(user_input):
-    words = user_input.strip().split()
-    for word in reversed(words):
+def extract_possible_ticker(text: str) -> str:
+    for word in reversed(text.strip().split()):
         candidate = word.strip(",.?!").upper()
         if candidate in valid_tickers:
             return candidate
-        candidate_lower = word.strip(",.?!").lower()
-        if candidate_lower in name_to_symbol:
-            return name_to_symbol[candidate_lower]
-    return user_input.strip()
+        lower = word.lower()
+        if lower in name_to_symbol:
+            return name_to_symbol[lower]
+    return text.strip()
 
-# === Request Schema ===
+async def fetch_company_data(ticker: str, data_type: str):
+    async with httpx.AsyncClient() as client:
+        response = await client.get(f"{API_BASE}/company/{ticker}/{data_type}")
+        return response.json()
+
+# === Request Model ===
 class ChatRequest(BaseModel):
     prompt_type: str
     ticker: str
 
-# === Chat Endpoint ===
+# === /chat Endpoint ===
 @app.post("/chat")
 async def chat(request: ChatRequest):
     try:
-        user_input = request.ticker.strip()
         prompt_type = request.prompt_type.lower()
-        extracted = extract_possible_ticker(user_input)
-        ticker = resolve_ticker(extracted)
+        user_input = request.ticker.strip()
 
-        if not ticker:
+        # Resolve ticker unless prompt_type is anomalies
+        ticker = resolve_ticker(extract_possible_ticker(user_input)) if prompt_type != "anomalies" else "IGNORED"
+
+        if not ticker and prompt_type != "anomalies":
             return {"reply": f"No data found for '{user_input}'."}
 
+        # === Prompt Generation ===
         if prompt_type == "ratios":
-            df_ratios = pd.read_csv("data/useful_database/ratios.csv")
-            prompt = generate_ratio_prompt(ticker, df_ratios)
+            df = pd.read_csv("data/useful_database/ratios.csv")
+            prompt = generate_ratio_prompt(ticker, df)
 
         elif prompt_type == "anomalies":
-            df_anomalies = pd.read_csv("data/useful_database/anomalies.csv")
-            prompt = generate_anomaly_prompt(df_anomalies)
+            df = pd.read_csv("data/useful_database/anomalies.csv")
+            prompt = generate_anomaly_prompt(df)
 
         elif prompt_type == "enhanced_hypothesis":
             prompt = generate_enhanced_hypothesis_prompt(ticker)
@@ -114,37 +109,51 @@ async def chat(request: ChatRequest):
             with open("data/useful_database/hypothesis_results.json") as f:
                 results = json.load(f)
             result = results[1] if "debt_equity" in results[1]["value_col"] else results[0]
-            prompt = generate_hypothesis_prompt(result, ticker=ticker, year1="2020", year2="2023")
+            prompt = generate_hypothesis_prompt(result, ticker, year1="2020", year2="2023")
 
         elif prompt_type == "stock_trend":
             prompt = generate_stock_trend_prompt(ticker)
 
         elif prompt_type == "compare":
-            df_ratios = pd.read_csv("data/useful_database/ratios.csv")
-            prompt = generate_comparison_prompt("AAPL", "MSFT", df_ratios)
+            df = pd.read_csv("data/useful_database/ratios.csv")
+            prompt = generate_comparison_prompt("AAPL", "MSFT", df)
 
-        elif prompt_type in ["financials", "taapi", "stock_data", "historical_features"]:
+        elif prompt_type in {"financials", "taapi", "stock_data", "historical_features"}:
             data = await fetch_company_data(ticker, prompt_type)
-            prompt = f"Analyze the following {prompt_type} for {ticker}: {data}"
+            prompt = f"Analyze the following {prompt_type} data for {ticker}:\n{data}"
 
         elif prompt_type == "overall_analysis":
             financials = await fetch_company_data(ticker, "financials")
             taapi = await fetch_company_data(ticker, "taapi")
-            stock_data = await fetch_company_data(ticker, "stock_data")
-            historical_features = await fetch_company_data(ticker, "historical_features")
+            stock = await fetch_company_data(ticker, "stock_data")
+            history = await fetch_company_data(ticker, "historical_features")
             prompt = (
-                f"Provide an overall financial analysis for {ticker} using the following data:\n"
-                f"Financials: {financials}\n"
-                f"TAAPI: {taapi}\n"
-                f"Stock Data: {stock_data}\n"
-                f"Historical Features: {historical_features}\n"
+                f"Provide an overall financial analysis for {ticker} using the following:\n"
+                f"- Financials: {financials}\n"
+                f"- TAAPI: {taapi}\n"
+                f"- Stock Data: {stock}\n"
+                f"- Historical Features: {history}\n"
             )
 
         else:
-            return {"reply": f"Invalid prompt type: {prompt_type}"}
+            return {"reply": f"❌ Invalid prompt type: '{prompt_type}'"}
 
         response = model.generate_content(prompt)
         return {"reply": response.text}
 
     except Exception as e:
         return {"reply": f"Error: {str(e)}"}
+
+# === /chat/suggestions Endpoint ===
+@app.get("/chat/suggestions")
+def get_suggested_queries():
+    return {
+        "suggestions": [
+            {"label": "📊 Financial Ratios", "prompt_type": "ratios", "example": "AAPL"},
+            {"label": "🚨 Anomaly Detection", "prompt_type": "anomalies", "example": "AAPL"},
+            {"label": "🧪 Enhanced Hypothesis", "prompt_type": "enhanced_hypothesis", "example": "AAPL"},
+            {"label": "🆚 Compare AAPL vs MSFT", "prompt_type": "compare", "example": "AAPL vs MSFT"},
+            {"label": "📈 Stock Trend Summary", "prompt_type": "stock_trend", "example": "AAPL"},
+            {"label": "📦 Overall Analysis", "prompt_type": "overall_analysis", "example": "AAPL"},
+        ]
+    }
