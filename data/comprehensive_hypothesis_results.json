@@ -1,0 +1,9 @@
+[
+  {
+    "value_col": "current_ratio",
+    "group_col": "anomaly",
+    "group1": 1,
+    "group2": 0,
+    "t_stat": 6.690454108231849,
+    "p_val": 1.2859678274969588e-09,
+    "significant": 

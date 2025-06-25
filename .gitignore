@@ -14,9 +14,6 @@ venv/
 # Jupyter Notebook checkpoints
 *.ipynb_checkpoints
 
-# Local data files (can be removed if you want versioned data)
-data/
-
 # Logs and runtime files
 *.log
 *.pid
@@ -28,3 +25,15 @@ Thumbs.db
 # Cache
 .cache/
 .pytest_cache/
+
+# Node.js (frontend)
+frontend/node_modules/
+backend/node_modules/
+frontend/dist/
+frontend/.vite/
+frontend/.env
+frontend/.env.*
+frontend/npm-debug.log*
+frontend/yarn-debug.log*
+frontend/yarn-error.log*
+frontend/pnpm-debug.log*

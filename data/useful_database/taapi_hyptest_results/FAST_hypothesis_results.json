@@ -1,0 +1,32 @@
+{
+  "RSI": {
+    "signals": 14,
+    "successes": 8,
+    "p": 0.395264
+  },
+  "MACD": {
+    "signals": 5,
+    "successes": 1,
+    "p": 0.96875
+  },
+  "EMA Golden Cross": {
+    "signals": 0,
+    "successes": 0,
+    "p": null
+  },
+  "Stochastic Crossover": {
+    "signals": 0,
+    "successes": 0,
+    "p": null
+  },
+  "Bollinger Bounce": {
+    "signals": 5,
+    "successes": 2,
+    "p": 0.8125
+  },
+  "OBV Divergence": {
+    "signals": 16,
+    "successes": 12,
+    "p": 0.038406
+  }
+}
