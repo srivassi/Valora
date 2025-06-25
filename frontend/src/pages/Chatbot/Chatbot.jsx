@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import './chatbot.css';
+import './Chatbot.css';
 
 export default function Chatbot() {
   const navigate = useNavigate();

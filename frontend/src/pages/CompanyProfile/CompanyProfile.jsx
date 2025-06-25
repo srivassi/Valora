@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import './companyprofile.css';
+import './CompanyProfile.css';
 
 const companies = [
     { id: 1, name: "Apple", industry: "Technology" },
