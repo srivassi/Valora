@@ -5,8 +5,8 @@ WORKDIR /app
 ENV PYTHONPATH=/app
 
 COPY . .
-COPY data/useful_database /data/useful_database
-COPY data/clean_fundamentals.csv /data/clean_fundamentals.csv
+COPY ../data/useful_database /data/useful_database
+COPY ../data/clean_fundamentals.csv /data/clean_fundamentals.csv
 #COPY backend/requirements.txt /app/requirements.txt
 
 RUN pip install --no-cache-dir -r requirements.txt
