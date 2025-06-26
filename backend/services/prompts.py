@@ -1,78 +1,155 @@
-# prompts.py
-
 RATIO_SUMMARY_TEMPLATE = """
-You are advising a {persona} investor. Your task is to evaluate {ticker}'s financial performance over the past 3 years using these metrics:
+User asked: "{question}"
+
+You are advising a {persona} investor. Evaluate {ticker}'s financial performance over the past 3 years using:
 
 {ratios_summary}
 
 Instructions:
-- Use bullet points, each under 10 words
-- Highlight strong trends, red flags, and improvements
-- Flag contradictory metrics clearly (e.g., high profits + negative cash)
-- Keep the total response under 100 words
-- End with a 2-line investor summary
-- Maintain a formal, investor-facing tone
+- Bullet key points (under 10 words each)
+- Highlight trends, red flags, contradictions
+- Keep it under 100 words
+- End with 2-line investor summary
+- Formal, investor-facing tone
 """
 
 ANOMALY_TEMPLATE = """
-You are a financial analyst reviewing anomalies in company financials.
+User asked: "{question}"
+
+You are a financial analyst reviewing anomalies in {ticker}'s financials.
 
 Detected anomalies:
 {anomaly_summary}
 
 Instructions:
-- Bullet each anomaly (≤10 words)
-- Note likely cause (e.g. market vs mismanagement)
-- Finish with 2 investor recommendations
-- Use concise, clear professional tone
+- Bullet each anomaly
+- Note likely cause (market vs mismanagement)
+- End with 2 investor recommendations
+- Use concise professional tone
 """
 
 HYPOTHESIS_TEMPLATE = """
-A test was done to check net margin change for {ticker} between {year1} and {year2}:
+User asked: "{question}"
 
-- Mean Net Margin {year1}: {mean1:.2f}
-- Mean Net Margin {year2}: {mean2:.2f}
+A hypothesis test was conducted on {ticker}'s net margin:
+
+- {year1} Mean Net Margin: {mean1:.2f}
+- {year2} Mean Net Margin: {mean2:.2f}
 - t-stat: {t_statistic:.2f}, p-value: {p_value:.4f}
 
 Instructions:
-- Interpret p-value significance
-- 3 short bullets (≤12 words)
-- Total response ≤80 words
+- Interpret significance
+- 3 bullets (≤12 words)
+- Max 80 words
 """
 
 COMPARE_TEMPLATE = """
-You are a financial analyst comparing {ticker1} and {ticker2}.
+User asked: "{question}"
 
-Summary of key financials:
+You are comparing {ticker1} vs {ticker2}.
+
+Key financials:
 {comparison_summary}
 
 Instructions:
 - Group by Liquidity, Profitability, Solvency, Efficiency
-- 2–3 bullets per group (≤10 words each)
+- 2–3 bullets per group
 - Identify stronger firm
-- End with short 2-line investor verdict
+- End with short verdict
 """
 
 PROS_CONS_TEMPLATE = """
+User asked: "{question}"
+
 You are advising a {persona} investor on {ticker}.
 
-Based on these metrics:
+Metrics:
 {data_summary}
 
 Instructions:
-- List 3 Pros (reasons to invest)
-- List 3 Cons (risks or concerns)
-- Use short bullet points (≤10 words)
-- End with a 1-line investment recommendation
+- List 3 pros (reasons to invest)
+- List 3 cons (risks)
+- Use short bullet points
+- End with 1-line recommendation
 """
 
 SCORE_TEMPLATE = """
-You are advising a {persona} investor. Based on {ticker}'s financial metrics:
+User asked: "{question}"
 
+You are scoring {ticker} for a {persona} investor.
+
+Financial summary:
 {data_summary}
 
 Instructions:
-- Assign investment score (0–100)
-- Give 3 short justifications (≤12 words each)
+- Score out of 100
+- 3 bullet justifications (≤12 words)
 - End with 1-line investor verdict
+"""
+
+STOCK_TREND_TEMPLATE = """
+User asked: "{question}"
+
+You are analyzing short-term stock trends for {ticker}.
+
+Recent indicators:
+{data_summary}
+
+Instructions:
+- Bullet 3 key indicators (e.g., RSI, MACD, Volatility)
+- Mention trend direction (bullish, bearish, neutral)
+- Keep response concise and technical
+- End with 1-line summary insight for short-term traders
+"""
+
+TAAPI_TEMPLATE = """
+User asked: "{question}"
+
+You are analyzing {ticker}'s technical indicators (TAAPI).
+
+Here is the raw TAAPI data:
+{data_summary}
+
+Instructions:
+- Summarize trends across MACD, RSI, EMAs
+- Use up to 5 bullet points
+- End with 1-line technical recommendation
+"""
+
+HISTORICAL_FEATURES_TEMPLATE = """
+User asked: "{question}"
+
+You are evaluating historical features for {ticker}.
+
+Feature summary:
+{data_summary}
+
+Instructions:
+- Note any anomalies, volatility, moving averages
+- Focus on recent patterns
+- Conclude with a short insight on historical stability
+"""
+
+OVERALL_ANALYSIS_TEMPLATE = """
+User asked: "{question}"
+
+Provide an overall financial analysis of {ticker} using all available data.
+
+Financial Summary:
+{ratios_summary}
+
+TAAPI:
+{taapi_summary}
+
+Stock Data:
+{stock_summary}
+
+Historical Features:
+{historical_summary}
+
+Instructions:
+- Start with financial strengths/weaknesses
+- Analyze technical signals
+- Highlight anomalies or inconsistencies
+- End with a 2-line investor verdict
 """
