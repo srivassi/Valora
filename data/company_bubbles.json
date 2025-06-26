@@ -126,7 +126,7 @@
     "industry": "Healthcare"
   },
   {
-    "company": "Vertex pharmaceuticals",
+    "company": "Vertex Pharmaceuticals",
     "ticker": "VRTX",
     "price": 455.45,
     "revenue": 11.05,
@@ -136,7 +136,7 @@
       "3y": 85.6,
       "5y": 69.6
     },
-    "pe_ratio": NaN,
+    "pe_ratio": null,
     "industry": "Healthcare"
   },
   {
@@ -234,7 +234,7 @@
       "3y": 44.5,
       "5y": 2.8
     },
-    "pe_ratio": NaN,
+    "pe_ratio": null,
     "industry": "Defense"
   },
   {
