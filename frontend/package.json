@@ -4,7 +4,8 @@
   "scripts": {
     "dev": "vite",
     "preview": "vite preview",
-    "build": "vite build"
+    "build": "vite build",
+    "start": "vite"
   },
   "dependencies": {
     "@tailwindcss/postcss": "^4.1.10",
