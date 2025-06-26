@@ -1,57 +1,78 @@
 # prompts.py
 
 RATIO_SUMMARY_TEMPLATE = """
-You are acting as a senior financial analyst. Your task is to evaluate {ticker}'s financial performance over the past 3 years based on the following metrics:
+You are advising a {persona} investor. Your task is to evaluate {ticker}'s financial performance over the past 3 years using these metrics:
 
 {ratios_summary}
 
-Your analysis should:
-- Identify and comment on observable trends (e.g., consistent growth, sudden declines, volatility)
-- Flag any strengths (e.g., high margins, strong liquidity) or concerns (e.g., rising debt, falling efficiency)
-- Offer a 2–3 sentence summary of overall financial health
-- Format key findings using bullet points for readability
-- Maintain a clear, formal, and investor-facing tone
+Instructions:
+- Use bullet points, each under 10 words
+- Highlight strong trends, red flags, and improvements
+- Flag contradictory metrics clearly (e.g., high profits + negative cash)
+- Keep the total response under 100 words
+- End with a 2-line investor summary
+- Maintain a formal, investor-facing tone
 """
 
 ANOMALY_TEMPLATE = """
-You are a financial analyst reviewing flagged anomalies in company financial statements.
+You are a financial analyst reviewing anomalies in company financials.
 
-Here are the companies and periods where anomalies were detected:
-
+Detected anomalies:
 {anomaly_summary}
 
-Please:
-- Identify what may have triggered these anomalies (e.g., sharp drop in revenue, increased leverage)
-- Suggest whether these anomalies may indicate poor financial management, market conditions, or accounting issues
-- Recommend what investors should pay closer attention to
-- Present your findings clearly and professionally
+Instructions:
+- Bullet each anomaly (≤10 words)
+- Note likely cause (e.g. market vs mismanagement)
+- Finish with 2 investor recommendations
+- Use concise, clear professional tone
 """
 
 HYPOTHESIS_TEMPLATE = """
-A hypothesis test was performed to assess changes in net margin for {ticker} between two periods: {year1} and {year2}.
+A test was done to check net margin change for {ticker} between {year1} and {year2}:
 
-Summary of the statistical test:
-- Mean Net Margin in {year1}: {mean1:.2f}
-- Mean Net Margin in {year2}: {mean2:.2f}
-- t-statistic: {t_statistic:.2f}
-- p-value: {p_value:.4f}
+- Mean Net Margin {year1}: {mean1:.2f}
+- Mean Net Margin {year2}: {mean2:.2f}
+- t-stat: {t_statistic:.2f}, p-value: {p_value:.4f}
 
-Your response should:
-- Explain whether the change is statistically significant based on the p-value
-- Offer potential reasons for the difference (e.g., operational efficiency, market conditions)
-- Include a concise conclusion in 2–3 lines
+Instructions:
+- Interpret p-value significance
+- 3 short bullets (≤12 words)
+- Total response ≤80 words
 """
 
 COMPARE_TEMPLATE = """
-You are a financial analyst comparing the fundamentals of two companies: {ticker1} and {ticker2}.
+You are a financial analyst comparing {ticker1} and {ticker2}.
 
-Here is a summary of their most recent financial ratios and performance metrics:
-
+Summary of key financials:
 {comparison_summary}
 
-Please:
-- Compare both companies in terms of liquidity, profitability, leverage, and efficiency
-- Identify which company demonstrates stronger overall fundamentals
-- Write an investor-friendly summary with clear, bullet-point takeaways and a short conclusion
+Instructions:
+- Group by Liquidity, Profitability, Solvency, Efficiency
+- 2–3 bullets per group (≤10 words each)
+- Identify stronger firm
+- End with short 2-line investor verdict
 """
 
+PROS_CONS_TEMPLATE = """
+You are advising a {persona} investor on {ticker}.
+
+Based on these metrics:
+{data_summary}
+
+Instructions:
+- List 3 Pros (reasons to invest)
+- List 3 Cons (risks or concerns)
+- Use short bullet points (≤10 words)
+- End with a 1-line investment recommendation
+"""
+
+SCORE_TEMPLATE = """
+You are advising a {persona} investor. Based on {ticker}'s financial metrics:
+
+{data_summary}
+
+Instructions:
+- Assign investment score (0–100)
+- Give 3 short justifications (≤12 words each)
+- End with 1-line investor verdict
+"""
