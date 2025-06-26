@@ -27,8 +27,8 @@ function LandingPage() {
                     <h1 className="about-title">What are we?</h1>
                     <h3 className="about-subtitle">About Information</h3>
                     <p className="about-description">
-                        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor
-                        incididunt ut labore et dolore magna aliqua.
+                        We’re exploring how far large language models can go when it comes to financial statement analysis. Inspired by research from AWS, our project investigates whether GPT-4 can analyse standardised, anonymised financial data and predict the direction of future earnings - without relying on industry context or narrative explanations.
+                        <br/> <br/>The ambition doesn’t stop there. We also aim to connect these predictions with actual stock performance over time, helping us assess each company’s future potential - or as we like to call it, its “bankability.”
                     </p>
 
                     <h3 className="our-services">Our Services</h3>
@@ -37,8 +37,7 @@ function LandingPage() {
                         <div className="service-box">
                             <h4>Company Profile Information</h4>
                             <p>
-                                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod
-                                tempor incididunt ut labore et dolore magna aliqua.
+                                 In this section, you'll find a curated set of anonymised company profiles, each built from real financial statements. The data has been standardised and stripped of any identifying or contextual information to keep things fair - and focused purely on performance. These profiles are the foundation for both human and AI analysis.
                             </p>
                             <button className="profile-btn" onClick={() => navigate('/companyprofile')}>
                                 &#10140; More Company Profiles
@@ -48,9 +47,8 @@ function LandingPage() {
                         <div className="service-box">
                             <h4>Chatbot Information</h4>
                             <p>
-                                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod
-                                tempor incididunt ut labore et dolore magna aliqua. Lorem ipsum dolor sit
-                                amet, consectetur adipiscing elit.
+                                Our custom-built chatbot, powered by Google Gemini, analyses the company data with surprising clarity. Using just the numbers, it forecasts earnings direction and provides insight into each company’s financial outlook.Add commentMore actions
+                                <br/><br/>It's part analyst, part predictor - and all data-driven. Think of it as a quiet overachiever with a sharp eye for trends (and no need for coffee breaks).
                             </p>
                         </div>
                     </div>
