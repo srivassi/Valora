@@ -1,0 +1,422 @@
+[
+  {
+    "company": "Apple",
+    "ticker": "AAPL",
+    "price": 199.2,
+    "revenue": 400.36,
+    "market_cap": 2975.0,
+    "returns": {
+      "1y": -6.51,
+      "3y": 45.3,
+      "5y": 135.0
+    },
+    "pe_ratio": 31.02,
+    "industry": "Technology"
+  },
+  {
+    "company": "NVIDIA",
+    "ticker": "NVDA",
+    "price": 141.97,
+    "revenue": 148.51,
+    "market_cap": 3464.0,
+    "returns": {
+      "1y": 9.57,
+      "3y": 808.6,
+      "5y": 1489.0
+    },
+    "pe_ratio": 46.71,
+    "industry": "Technology"
+  },
+  {
+    "company": "Microsoft",
+    "ticker": "MSFT",
+    "price": 474.96,
+    "revenue": 270.01,
+    "market_cap": 3530.0,
+    "returns": {
+      "1y": 8.38,
+      "3y": 101.0,
+      "5y": 162.4
+    },
+    "pe_ratio": 37.01,
+    "industry": "Technology"
+  },
+  {
+    "company": "Alphabet",
+    "ticker": "GOOGL",
+    "price": 174.67,
+    "revenue": 359.71,
+    "market_cap": 1016.0,
+    "returns": {
+      "1y": 0.2,
+      "3y": 65.2,
+      "5y": 147.4
+    },
+    "pe_ratio": 19.59,
+    "industry": "Technology"
+  },
+  {
+    "company": "Broadcom",
+    "ticker": "AVGO",
+    "price": 248.7,
+    "revenue": 51.57,
+    "market_cap": 1170.0,
+    "returns": {
+      "1y": 49.9,
+      "3y": 412.1,
+      "5y": 829.2
+    },
+    "pe_ratio": 96.26,
+    "industry": "Technology"
+  },
+  {
+    "company": "Eli Lilly ",
+    "ticker": "LLY",
+    "price": 819.36,
+    "revenue": 40.04,
+    "market_cap": 777.0,
+    "returns": {
+      "1y": -7.24,
+      "3y": 181.0,
+      "5y": 471.0
+    },
+    "pe_ratio": 67.27,
+    "industry": "Healthcare"
+  },
+  {
+    "company": "Novo Nordisk",
+    "ticker": "NVO",
+    "price": 79.83,
+    "revenue": 42.1,
+    "market_cap": 269.0,
+    "returns": {
+      "1y": -44.0,
+      "3y": 48.4,
+      "5y": 147.0
+    },
+    "pe_ratio": 22.1,
+    "industry": "Healthcare"
+  },
+  {
+    "company": "AbbVie",
+    "ticker": "ABBV",
+    "price": 191.08,
+    "revenue": 56.3,
+    "market_cap": 338.0,
+    "returns": {
+      "1y": 14.7,
+      "3y": 37.1,
+      "5y": 107.0
+    },
+    "pe_ratio": 82.05,
+    "industry": "Healthcare"
+  },
+  {
+    "company": "Boston Scientific",
+    "ticker": "BSX",
+    "price": 99.74,
+    "revenue": 16.75,
+    "market_cap": 148.0,
+    "returns": {
+      "1y": 29.6,
+      "3y": 174.0,
+      "5y": 182.0
+    },
+    "pe_ratio": 72.22,
+    "industry": "Healthcare"
+  },
+  {
+    "company": "Vertex Pharmaceuticals",
+    "ticker": "VRTX",
+    "price": 455.45,
+    "revenue": 11.05,
+    "market_cap": 117.0,
+    "returns": {
+      "1y": -4.92,
+      "3y": 85.6,
+      "5y": 69.6
+    },
+    "pe_ratio": null,
+    "industry": "Healthcare"
+  },
+  {
+    "company": "Exxon Mobil Corp",
+    "ticker": "XOM",
+    "price": 112.12,
+    "revenue": 250.32,
+    "market_cap": 483.0,
+    "returns": {
+      "1y": 1.89,
+      "3y": 17.0,
+      "5y": 138.0
+    },
+    "pe_ratio": 14.83,
+    "industry": "Energy"
+  },
+  {
+    "company": "Chevron Corp",
+    "ticker": "CVX",
+    "price": 146.03,
+    "revenue": 154.12,
+    "market_cap": 255.0,
+    "returns": {
+      "1y": -4.29,
+      "3y": -6.08,
+      "5y": 55.3
+    },
+    "pe_ratio": 16.73,
+    "industry": "Energy"
+  },
+  {
+    "company": "EOG Resources Inc",
+    "ticker": "EOG",
+    "price": 123.18,
+    "revenue": 23.24,
+    "market_cap": 67.0,
+    "returns": {
+      "1y": 4.18,
+      "3y": 3.03,
+      "5y": 126.0
+    },
+    "pe_ratio": 11.63,
+    "industry": "Energy"
+  },
+  {
+    "company": "Phillips 66",
+    "ticker": "PSX",
+    "price": 123.62,
+    "revenue": 143.15,
+    "market_cap": 50.0,
+    "returns": {
+      "1y": -9.61,
+      "3y": 28.1,
+      "5y": 60.5
+    },
+    "pe_ratio": 27.86,
+    "industry": "Energy"
+  },
+  {
+    "company": "Martathon Pertroleum Corp",
+    "ticker": "MPC",
+    "price": 166.78,
+    "revenue": 101.62,
+    "market_cap": 51.0,
+    "returns": {
+      "1y": -1.93,
+      "3y": 81.3,
+      "5y": 332.0
+    },
+    "pe_ratio": 23.34,
+    "industry": "Energy"
+  },
+  {
+    "company": "Lockheed Martin",
+    "ticker": "LMT",
+    "price": 468.6,
+    "revenue": 53.4,
+    "market_cap": 110.0,
+    "returns": {
+      "1y": 1.87,
+      "3y": 16.0,
+      "5y": 23.8
+    },
+    "pe_ratio": 20.71,
+    "industry": "Defense"
+  },
+  {
+    "company": "Boeing",
+    "ticker": "BA",
+    "price": 197.68,
+    "revenue": 66.52,
+    "market_cap": 149.0,
+    "returns": {
+      "1y": 13.0,
+      "3y": 44.5,
+      "5y": 2.8
+    },
+    "pe_ratio": null,
+    "industry": "Defense"
+  },
+  {
+    "company": "General Dynamics",
+    "ticker": "GD",
+    "price": 278.53,
+    "revenue": 47.7,
+    "market_cap": 75.0,
+    "returns": {
+      "1y": -6.53,
+      "3y": 32.8,
+      "5y": 75.1
+    },
+    "pe_ratio": 19.52,
+    "industry": "Defense"
+  },
+  {
+    "company": "Textron",
+    "ticker": "TXT",
+    "price": 76.61,
+    "revenue": 13.0,
+    "market_cap": 14.0,
+    "returns": {
+      "1y": -10.9,
+      "3y": 30.3,
+      "5y": 119.0
+    },
+    "pe_ratio": 17.4,
+    "industry": "Defense"
+  },
+  {
+    "company": "Honeywell International",
+    "ticker": "HON",
+    "price": 221.87,
+    "revenue": 38.49,
+    "market_cap": 143.0,
+    "returns": {
+      "1y": 4.23,
+      "3y": 23.5,
+      "5y": 49.7
+    },
+    "pe_ratio": 25.47,
+    "industry": "Defense"
+  },
+  {
+    "company": "Walmart",
+    "ticker": "WMT",
+    "price": 94.44,
+    "revenue": 180.6,
+    "market_cap": 758.858,
+    "returns": {
+      "1y": 40.7,
+      "3y": 141.0,
+      "5y": 142.0
+    },
+    "pe_ratio": 40.43,
+    "industry": "Consumer Goods"
+  },
+  {
+    "company": "Procter & Gamble Co",
+    "ticker": "PG",
+    "price": 165.96,
+    "revenue": 84.21,
+    "market_cap": 376.0,
+    "returns": {
+      "1y": 8.5,
+      "3y": 25.4,
+      "5y": 51.2
+    },
+    "pe_ratio": 26.0,
+    "industry": "Consumer Goods"
+  },
+  {
+    "company": "Coca-Cola",
+    "ticker": "KO",
+    "price": 63.43,
+    "revenue": 45.75,
+    "market_cap": 273.0,
+    "returns": {
+      "1y": 1.1,
+      "3y": 17.3,
+      "5y": 34.6
+    },
+    "pe_ratio": 24.5,
+    "industry": "Consumer Goods"
+  },
+  {
+    "company": "Pepsi",
+    "ticker": "PEP",
+    "price": 169.55,
+    "revenue": 91.47,
+    "market_cap": 233.0,
+    "returns": {
+      "1y": 6.2,
+      "3y": 30.9,
+      "5y": 59.1
+    },
+    "pe_ratio": 25.8,
+    "industry": "Consumer Goods"
+  },
+  {
+    "company": "Nike",
+    "ticker": "NKE",
+    "price": 93.19,
+    "revenue": 51.48,
+    "market_cap": 142.0,
+    "returns": {
+      "1y": -11.8,
+      "3y": -5.3,
+      "5y": 34.2
+    },
+    "pe_ratio": 28.6,
+    "industry": "Consumer Goods"
+  },
+  {
+    "company": "JP Morgan",
+    "ticker": "JPM",
+    "price": 193.35,
+    "revenue": 157.6,
+    "market_cap": 561.0,
+    "returns": {
+      "1y": 25.3,
+      "3y": 44.1,
+      "5y": 88.0
+    },
+    "pe_ratio": 12.1,
+    "industry": "Finance"
+  },
+  {
+    "company": "Goldman Sachs",
+    "ticker": "GS",
+    "price": 456.93,
+    "revenue": 46.25,
+    "market_cap": 147.0,
+    "returns": {
+      "1y": 30.5,
+      "3y": 21.4,
+      "5y": 71.9
+    },
+    "pe_ratio": 16.3,
+    "industry": "Finance"
+  },
+  {
+    "company": "Mastercard",
+    "ticker": "MA",
+    "price": 444.18,
+    "revenue": 25.88,
+    "market_cap": 417.0,
+    "returns": {
+      "1y": 19.7,
+      "3y": 56.7,
+      "5y": 112.6
+    },
+    "pe_ratio": 36.2,
+    "industry": "Finance"
+  },
+  {
+    "company": "Visa",
+    "ticker": "V",
+    "price": 272.25,
+    "revenue": 35.03,
+    "market_cap": 564.0,
+    "returns": {
+      "1y": 21.2,
+      "3y": 57.1,
+      "5y": 122.3
+    },
+    "pe_ratio": 30.3,
+    "industry": "Finance"
+  },
+  {
+    "company": "Bank of America",
+    "ticker": "BAC",
+    "price": 45.7,
+    "revenue": 25.3,
+    "market_cap": 33939.0,
+    "returns": {
+      "1y": 12.7,
+      "3y": 41.2,
+      "5y": 80.0
+    },
+    "pe_ratio": 13.2,
+    "industry": "Finance"
+  }
+]

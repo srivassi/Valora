@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './Chatbot.css';
+import { marked } from 'marked';
 
 const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:8000';
 
@@ -11,12 +12,26 @@ export default function Chatbot() {
   const [inputText, setInputText] = useState('');
   const [hasStarted, setHasStarted] = useState(false);
   const chatEndRef = useRef(null);
+  const [loading, setLoading] = useState(false);
+  const [suggestions, setSuggestions] = useState([]);
+  const [showSuggestions, setShowSuggestions] = useState(true);
 
   useEffect(() => {
     if (chatEndRef.current) {
       chatEndRef.current.scrollIntoView({ behavior: 'smooth' });
     }
   }, [messages]);
+
+  const fetchSuggestions = async () => {
+    try {
+      const res = await fetch('http://localhost:8000/chat/suggestions');
+      const data = await res.json();
+      setSuggestions(data.suggestions || []);
+      setShowSuggestions(true);
+    } catch {
+      setSuggestions([]);
+    }
+  };
 
   const sendMessage = async () => {
     if (inputText.trim() === '') return;
@@ -25,6 +40,7 @@ export default function Chatbot() {
     setMessages((prev) => [...prev, userMsg]);
     setInputText('');
     setHasStarted(true);
+    setLoading(true);
 
     let promptType = 'overall_analysis';
     const lowerInput = inputText.toLowerCase();
@@ -41,7 +57,8 @@ export default function Chatbot() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           prompt_type: promptType,
-          ticker: 'AAP' // Hardcoded or modify to extract from input
+          ticker: '',
+          question: inputText.trim()
         }),
       });
       const data = await res.json();
@@ -52,11 +69,26 @@ export default function Chatbot() {
         ...prev,
         { sender: 'bot', text: 'Error: Could not reach backend.' }
       ]);
+    } finally{
+      setLoading(false);
     }
+  };
+
+  const renderMessage = (msg) => {
+    if (msg.sender === 'bot') {
+      return (
+        <div
+          className="chat-message bot-msg"
+          dangerouslySetInnerHTML={{ __html: marked.parse(msg.text) }}
+        />
+      );
+    }
+    return <div className="chat-message user-msg">{msg.text}</div>;
   };
 
   const handleKeyDown = (e) => {
     if (e.key === 'Enter') {
+      console.log("Sending:", inputText)
       sendMessage();
     }
   };
@@ -65,7 +97,25 @@ export default function Chatbot() {
     setMessages([]);
     setHasStarted(false);
     setInputText('');
+    fetchSuggestions();
   };
+
+  // Hide suggestions when user types
+  const handleInputChange = (e) => {
+    setInputText(e.target.value);
+    if (showSuggestions) setShowSuggestions(false);
+  };
+
+  // Fill input when suggestion is clicked
+  const handleSuggestionClick = (s) => {
+    setInputText(s.example);
+    setShowSuggestions(false);
+  };
+
+  // Fetch suggestions on first mount
+  useEffect(() => {
+    fetchSuggestions();
+  }, []);
 
   return (
     <div className="chatbot-page">
@@ -102,12 +152,32 @@ export default function Chatbot() {
 
           <div className="chat-scroll-container">
             {messages.map((msg, index) => (
-              <div key={index} className={`chat-message ${msg.sender === 'user' ? 'user-msg' : 'bot-msg'}`}>
-                {msg.text}
-              </div>
+               <React.Fragment key={index}>
+                 {renderMessage(msg)}
+               </React.Fragment>
             ))}
+            {loading && (
+              <div className="chat-message bot-msg">
+                <em>🔎 Analysing your request...</em>
+              </div>
+            )}
             <div ref={chatEndRef} />
           </div>
+
+           {/* Suggestions Bubble */}
+          {showSuggestions && suggestions.length > 0 && (
+            <div className="suggestions-bubble">
+              {suggestions.map((s, i) => (
+                <div
+                  key={i}
+                  className="suggestion-btn"
+                  onClick={() => handleSuggestionClick(s)}
+                >
+                  {s.label} <span className="example">{s.example}</span>
+                </div>
+              ))}
+            </div>
+          )}
 
           {/* Input Box */}
           <div className="input-box">
@@ -116,7 +186,7 @@ export default function Chatbot() {
               placeholder="Ask me anything..."
               className="chat-input"
               value={inputText}
-              onChange={(e) => setInputText(e.target.value)}
+              onChange={handleInputChange}
               onKeyDown={handleKeyDown}
             />
             <button className="send-button" onClick={sendMessage}>Send</button>
