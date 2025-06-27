@@ -12,6 +12,34 @@ ticker_redirects = {
     "UTX": "RTX", "ARNC": "AA", "WYN": "WH"
 }
 
+def normalise_ticker(ticker: str) -> str:
+    # Map to new ticker if redirect exists, else return original
+    return ticker_redirects.get(ticker, ticker)
+
+reverse_ticker_redirects = {v: k for k, v in ticker_redirects.items() if v}
+
+def reverse_normalise_ticker(ticker: str) -> str:
+    return reverse_ticker_redirects.get(ticker, ticker)
+
+def find_ticker_file(ticker, data_dir='data'):
+    # Check current ticker filename
+    current_path = os.path.join(data_dir, f"{ticker}.csv")
+    if os.path.exists(current_path):
+        return current_path
+
+    # Check legacy ticker filename
+    legacy = reverse_normalise_ticker(ticker)
+    if legacy != ticker:
+        legacy_path = os.path.join(data_dir, f"{legacy}.csv")
+        if os.path.exists(legacy_path):
+            return legacy_path
+
+    raise FileNotFoundError(f"No data file found for ticker: {ticker} or legacy: {legacy}")
+
+def get_file_ticker(ticker: str) -> str:
+    # Try reverse mapping (e.g., META -> FB)
+    legacy = reverse_normalise_ticker(ticker)
+    return legacy if legacy != ticker else ticker
 
 def get_unique_tickers(csv_filename: str = "clean_fundamentals.csv") -> list:
     current_dir = os.path.dirname(os.path.abspath(__file__))  # backend/utils

@@ -1,5 +1,8 @@
 import os
 import json
+import sys
+import spacy
+from rapidfuzz import fuzz
 import pandas as pd
 import google.generativeai as genai
 import httpx
@@ -15,7 +18,8 @@ from backend.utils.ticker_loader import get_unique_tickers
 from backend.services.api.company_data_api import router as company_data_router
 
 # === Gemini Setup ===
-load_dotenv(find_dotenv())
+print("find_dotenv():", find_dotenv(), file=sys.stderr)
+load_dotenv(find_dotenv("backend/.env"))
 api_key = os.getenv("GEMINI_API_KEY")
 if not api_key:
     raise ValueError("❌ GEMINI_API_KEY is missing")
@@ -47,13 +51,41 @@ def resolve_ticker(user_input: str) -> str:
             return symbol
     return None
 
+nlp = spacy.load("en_core_web_sm")
+
 def extract_possible_ticker(text: str) -> str:
-    for word in reversed(text.strip().split()):
+    text = text.strip().lower()
+    # Try full match first
+    # Step 1: Use spaCy to extract named entities
+    doc = nlp(text)
+    entities = [ent.text.lower() for ent in doc.ents if ent.label_ in {"ORG", "GPE", "PRODUCT"}]
+
+    # Step 2: Check for exact matches in name_to_symbol
+    for entity in entities:
+        if entity in name_to_symbol:
+            return name_to_symbol[entity]
+
+    # Step 3: Fuzzy match entities or tokens with company names
+    best_match = None
+    highest_score = 0
+    for entity in entities:
+        for name in name_to_symbol:
+            score = fuzz.partial_ratio(entity, name)
+            if score > highest_score and score > 80:  # Threshold for a good match
+                best_match = name
+                highest_score = score
+
+    if best_match:
+        return name_to_symbol[best_match]
+
+    # Step 4: Fallback to token-based matching
+    for word in reversed(text.split()):
         candidate = word.strip(",.?!").upper()
         if candidate in valid_tickers:
             return candidate
-        if word.lower() in name_to_symbol:
-            return name_to_symbol[word.lower()]
+        if word in name_to_symbol:
+            return name_to_symbol[word]
+
     return None
 
 async def fetch_company_data(ticker: str, data_type: str):

@@ -132,7 +132,8 @@ function CompanyProfiles() {
             <div className="profiles-intro">
                 <h1 className="profiles-title">Explore Company Financial Profiles</h1>
                 <p className="profiles-description">
-                    Discover financial summaries and insights from leading NYSE companies. Click on a company to view key financial info and trends (placeholder data).
+                    Discover financial summaries and insights from leading NYSE companies.
+                    Click to view additional financial information
                 </p>
             </div>
 
