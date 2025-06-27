@@ -16,6 +16,7 @@ from backend.services.prompt_generator import generate_prompt, normalize_columns
 from backend.services.company_data_store import load_company_names
 from backend.utils.ticker_loader import get_unique_tickers
 from backend.services.api.company_data_api import router as company_data_router
+from backend.services.data_ingestion.stock_data import ticker_redirects
 
 # === Gemini Setup ===
 print("find_dotenv():", find_dotenv(), file=sys.stderr)
@@ -38,17 +39,18 @@ name_to_symbol = {item['name'].lower(): item['symbol'].upper() for item in compa
 valid_tickers = set(get_unique_tickers())
 API_BASE = "http://localhost:8000"
 
-# === Utils ===
+# === Utilities ===
 def resolve_ticker(user_input: str) -> str:
-    upper = user_input.upper()
-    lower = user_input.lower()
+    upper = user_input.upper().strip()
+    lower = user_input.lower().strip()
     if upper in valid_tickers:
-        return upper
-    if lower in name_to_symbol and name_to_symbol[lower] in valid_tickers:
-        return name_to_symbol[lower]
+        return ticker_redirects.get(upper, upper)
+    if lower in name_to_symbol:
+        symbol = name_to_symbol[lower]
+        return ticker_redirects.get(symbol, symbol)
     for name, symbol in name_to_symbol.items():
-        if lower in name and symbol in valid_tickers:
-            return symbol
+        if lower in name:
+            return ticker_redirects.get(symbol, symbol)
     return None
 
 nlp = spacy.load("en_core_web_sm")
@@ -142,7 +144,7 @@ class ChatRequest(BaseModel):
     persona: str = "general"
     question: str = ""
 
-# === Main Endpoint ===
+# === Main Chat Endpoint ===
 @app.post("/chat")
 async def chat(request: ChatRequest):
     try:
@@ -164,32 +166,43 @@ async def chat(request: ChatRequest):
             if not ticker1 or not ticker2:
                 return {"reply": "❌ Invalid or unsupported tickers."}
             df = normalize_columns(pd.read_csv("data/useful_database/ratios.csv"))
-            summary = df[df["ticker_symbol"].isin([ticker1, ticker2])].to_string(index=False)
+            comparison_df = df[df["ticker_symbol"].isin([ticker1, ticker2])]
+            if comparison_df.empty:
+                return {"reply": "⚠️ No comparison data found for those tickers."}
+            summary = comparison_df.to_string(index=False)
             prompt = generate_prompt(prompt_type, question=question, ticker1=ticker1, ticker2=ticker2, comparison_summary=summary)
 
         else:
             ticker = resolve_ticker(extract_possible_ticker(user_input or question)) if prompt_type != "anomalies" else "IGNORED"
-            print(f"🪙 Extracted Ticker: {ticker}")  # Debug for extraction
             if not ticker and prompt_type != "anomalies":
                 return {"reply": f"❌ No valid ticker found in '{user_input or question}'."}
 
             if prompt_type == "ratios":
                 df = normalize_columns(pd.read_csv("data/useful_database/ratios.csv"))
-                summary = df[df["ticker_symbol"] == ticker].sort_values("period_ending", ascending=False).head(3).to_string(index=False)
+                summary_df = df[df["ticker_symbol"] == ticker].sort_values("period_ending", ascending=False).head(3)
+                if summary_df.empty:
+                    return {"reply": f"⚠️ No ratio data found for {ticker}."}
+                summary = summary_df.to_string(index=False)
                 prompt = generate_prompt(prompt_type, question=question, persona=persona, ticker=ticker, ratios_summary=summary)
 
             elif prompt_type == "anomalies":
                 df = normalize_columns(pd.read_csv("data/useful_database/anomalies.csv"))
-                summary = df[df["anomaly"] == 1].head(5).to_string(index=False)
+                flagged = df[df["anomaly"] == 1]
+                if flagged.empty:
+                    return {"reply": "⚠️ No anomalies detected in the current dataset."}
+                summary = flagged.head(5).to_string(index=False)
                 prompt = generate_prompt(prompt_type, question=question, ticker=ticker, anomaly_summary=summary)
 
             elif prompt_type == "hypothesis":
                 with open("data/useful_database/hypothesis_results.json") as f:
                     results = json.load(f)
+                if not results:
+                    return {"reply": "⚠️ Hypothesis test results are unavailable."}
                 result = results[1] if "debt_equity" in results[1]["value_col"] else results[0]
-                prompt = generate_prompt(prompt_type, question=question, persona=persona, ticker=ticker, year1="2020", year2="2023",
+                prompt = generate_prompt(prompt_type, question=question, persona=persona, ticker=ticker,
+                                         year1="2020", year2="2023",
                                          mean1=result["mean_1"], mean2=result["mean_2"],
-                                         t_statistic=result["t_statistic"], p_value=result["p_value"])
+                                         t_statistic=result["t_stat"], p_value=result["p_val"])
 
             elif prompt_type == "enhanced_hypothesis":
                 path = f"backend/data/taapi_hyptest_results/{ticker}_hypothesis_results.json"
@@ -197,10 +210,14 @@ async def chat(request: ChatRequest):
                     return {"reply": f"❌ No enhanced hypothesis data for {ticker}."}
                 with open(path) as f:
                     data_summary = json.load(f)
+                if not data_summary:
+                    return {"reply": f"⚠️ Enhanced hypothesis data for {ticker} is empty."}
                 prompt = generate_prompt(prompt_type, question=question, ticker=ticker, persona=persona, data_summary=json.dumps(data_summary, indent=2))
 
             elif prompt_type in {"financials", "taapi", "stock_data", "historical_features"}:
                 data = await fetch_company_data(ticker, prompt_type)
+                if not data:
+                    return {"reply": f"⚠️ No {prompt_type} data found for {ticker}."}
                 summary = summarize_financials(data) if prompt_type == "financials" else truncate_text(json.dumps(data, indent=2))
                 prompt = generate_prompt(prompt_type, question=question, ticker=ticker, data_summary=summary)
 
@@ -256,7 +273,7 @@ async def chat(request: ChatRequest):
             return {"reply": "⚠️ Rate limit reached. Please wait and try again."}
         return {"reply": f"❌ Error: {str(e)}"}
 
-# === Suggestions ===
+# === Suggestions Endpoint ===
 @app.get("/chat/suggestions")
 def get_suggested_queries():
     return {

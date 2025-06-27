@@ -9,16 +9,34 @@ export default function Chatbot() {
   const [messages, setMessages] = useState([]);
   const [inputText, setInputText] = useState('');
   const [hasStarted, setHasStarted] = useState(false);
-  const chatEndRef = useRef(null);
   const [loading, setLoading] = useState(false);
   const [suggestions, setSuggestions] = useState([]);
   const [showSuggestions, setShowSuggestions] = useState(true);
+  const chatEndRef = useRef(null);
 
   useEffect(() => {
     if (chatEndRef.current) {
       chatEndRef.current.scrollIntoView({ behavior: 'smooth' });
     }
   }, [messages]);
+
+  // Detect prompt type based on keywords
+  const detectPromptType = (text) => {
+    const msg = text.toLowerCase();
+    if (msg.includes('compare') || msg.includes('vs')) return 'compare';
+    if (msg.includes('anomal')) return 'anomalies';
+    if (msg.includes('enhanced hypothesis') || msg.includes('signal')) return 'enhanced_hypothesis';
+    if (msg.includes('hypothesis')) return 'hypothesis';
+    if (msg.includes('pros') || msg.includes('cons')) return 'pros_cons';
+    if (msg.includes('score')) return 'score';
+    if (msg.includes('trend')) return 'stock_trend';
+    if (msg.includes('financial')) return 'financials';
+    if (msg.includes('taapi')) return 'taapi';
+    if (msg.includes('feature')) return 'historical_features';
+    if (msg.includes('stock')) return 'stock_data';
+    if (msg.includes('overall')) return 'overall_analysis';
+    return 'ratios'; // fallback
+  };
 
   const fetchSuggestions = async () => {
     try {
@@ -32,22 +50,16 @@ export default function Chatbot() {
   };
 
   const sendMessage = async () => {
-    if (inputText.trim() === '') return;
+    const cleanedInput = inputText.trim();
+    if (!cleanedInput) return;
 
-    const userMsg = { sender: 'user', text: inputText.trim() };
+    const userMsg = { sender: 'user', text: cleanedInput };
     setMessages((prev) => [...prev, userMsg]);
     setInputText('');
     setHasStarted(true);
     setLoading(true);
 
-    let promptType = 'overall_analysis';
-    const lowerInput = inputText.toLowerCase();
-    if (lowerInput.includes('anomaly')) promptType = 'anomalies';
-    else if (lowerInput.includes('hypothesis')) promptType = 'hypothesis';
-    else if (lowerInput.includes('financial')) promptType = 'financials';
-    else if (lowerInput.includes('taapi')) promptType = 'taapi';
-    else if (lowerInput.includes('stock')) promptType = 'stock_data';
-    else if (lowerInput.includes('historical')) promptType = 'historical_features';
+    const promptType = detectPromptType(cleanedInput);
 
     try {
       const res = await fetch('http://localhost:8000/chat', {
@@ -55,19 +67,22 @@ export default function Chatbot() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           prompt_type: promptType,
-          ticker: '',
-          question: inputText.trim()
+          ticker: cleanedInput,
+          persona: 'general',
+          question: cleanedInput
         }),
       });
+
       const data = await res.json();
-      const botMsg = { sender: 'bot', text: data.reply };
+      const botMsg = { sender: 'bot', text: data.reply || '⚠️ No response received.' };
       setMessages((prev) => [...prev, botMsg]);
     } catch (err) {
+      console.error('Backend error:', err);
       setMessages((prev) => [
         ...prev,
-        { sender: 'bot', text: 'Error: Could not reach backend.' }
+        { sender: 'bot', text: '❌ Error: Could not reach backend.' }
       ]);
-    } finally{
+    } finally {
       setLoading(false);
     }
   };
@@ -85,10 +100,7 @@ export default function Chatbot() {
   };
 
   const handleKeyDown = (e) => {
-    if (e.key === 'Enter') {
-      console.log("Sending:", inputText)
-      sendMessage();
-    }
+    if (e.key === 'Enter') sendMessage();
   };
 
   const handleNewChat = () => {
@@ -98,19 +110,16 @@ export default function Chatbot() {
     fetchSuggestions();
   };
 
-  // Hide suggestions when user types
   const handleInputChange = (e) => {
     setInputText(e.target.value);
     if (showSuggestions) setShowSuggestions(false);
   };
 
-  // Fill input when suggestion is clicked
   const handleSuggestionClick = (s) => {
     setInputText(s.example);
     setShowSuggestions(false);
   };
 
-  // Fetch suggestions on first mount
   useEffect(() => {
     fetchSuggestions();
   }, []);
@@ -134,12 +143,10 @@ export default function Chatbot() {
         </div>
       </aside>
 
-      {/* Main Content */}
+      {/* Main Chat Section */}
       <main className="main-content">
         <header className="chatbot-header">
-          <h2 className="valora-link" onClick={() => navigate('/')}>
-            Valora
-          </h2>
+          <h2 className="valora-link" onClick={() => navigate('/')}>Valora</h2>
           <button className="profiles-button" onClick={() => navigate('/companyprofile')}>
             Company Profiles
           </button>
@@ -150,9 +157,7 @@ export default function Chatbot() {
 
           <div className="chat-scroll-container">
             {messages.map((msg, index) => (
-               <React.Fragment key={index}>
-                 {renderMessage(msg)}
-               </React.Fragment>
+              <React.Fragment key={index}>{renderMessage(msg)}</React.Fragment>
             ))}
             {loading && (
               <div className="chat-message bot-msg">
@@ -162,7 +167,7 @@ export default function Chatbot() {
             <div ref={chatEndRef} />
           </div>
 
-           {/* Suggestions Bubble */}
+          {/* Suggestions Bubble */}
           {showSuggestions && suggestions.length > 0 && (
             <div className="suggestions-bubble">
               {suggestions.map((s, i) => (
@@ -181,7 +186,7 @@ export default function Chatbot() {
           <div className="input-box">
             <input
               type="text"
-              placeholder="Ask me anything..."
+              placeholder="Ask me anything about a company..."
               className="chat-input"
               value={inputText}
               onChange={handleInputChange}
