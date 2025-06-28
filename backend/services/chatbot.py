@@ -12,14 +12,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 
-from backend.services.prompt_generator import (
-    generate_ratio_prompt,
-    generate_anomaly_prompt,
-    generate_enhanced_hypothesis_prompt,
-    generate_hypothesis_prompt,
-    generate_stock_trend_prompt,
-    generate_comparison_prompt
-)
+from backend.services.prompt_generator import generate_prompt
 
 from services.company_data_store import load_company_names
 from utils.ticker_loader import get_unique_tickers
