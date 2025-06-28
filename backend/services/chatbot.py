@@ -12,11 +12,11 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 
-from backend.services.prompt_generator import generate_prompt
+from backend.services.prompt_generator import generate_prompt, normalise_columns
 
-from services.company_data_store import load_company_names
-from utils.ticker_loader import get_unique_tickers
-from services.api.company_data_api import router as company_data_router
+from backend.services.company_data_store import load_company_names
+from backend.utils.ticker_loader import get_unique_tickers
+from backend.services.api.company_data_api import router as company_data_router
 
 # === Gemini Setup ===
 load_dotenv(find_dotenv())
@@ -168,7 +168,7 @@ async def chat(request: ChatRequest):
             ticker2 = resolve_ticker(parts[1])
             if not ticker1 or not ticker2:
                 return {"reply": "❌ Invalid or unsupported tickers."}
-            df = normalize_columns(pd.read_csv("data/useful_database/ratios.csv"))
+            df = normalise_columns(pd.read_csv("data/useful_database/ratios.csv"))
             summary = df[df["ticker_symbol"].isin([ticker1, ticker2])].to_string(index=False)
             prompt = generate_prompt(prompt_type, question=question, ticker1=ticker1, ticker2=ticker2, comparison_summary=summary)
 
@@ -179,12 +179,12 @@ async def chat(request: ChatRequest):
                 return {"reply": f"❌ No valid ticker found in '{user_input or question}'."}
 
             if prompt_type == "ratios":
-                df = normalize_columns(pd.read_csv("data/useful_database/ratios.csv"))
+                df = normalise_columns(pd.read_csv("data/useful_database/ratios.csv"))
                 summary = df[df["ticker_symbol"] == ticker].sort_values("period_ending", ascending=False).head(3).to_string(index=False)
                 prompt = generate_prompt(prompt_type, question=question, persona=persona, ticker=ticker, ratios_summary=summary)
 
             elif prompt_type == "anomalies":
-                df = normalize_columns(pd.read_csv("data/useful_database/anomalies.csv"))
+                df = normalise_columns(pd.read_csv("data/useful_database/anomalies.csv"))
                 summary = df[df["anomaly"] == 1].head(5).to_string(index=False)
                 prompt = generate_prompt(prompt_type, question=question, ticker=ticker, anomaly_summary=summary)
 
@@ -226,7 +226,7 @@ async def chat(request: ChatRequest):
                 )
 
             elif prompt_type in {"pros_cons", "score"}:
-                df = normalize_columns(pd.read_csv("data/useful_database/ratios.csv"))
+                df = normalise_columns(pd.read_csv("data/useful_database/ratios.csv"))
                 row = df[df["ticker_symbol"] == ticker].sort_values("period_ending", ascending=False).head(1)
                 if row.empty:
                     return {"reply": f"❌ No recent ratio data for {ticker}."}

@@ -15,7 +15,7 @@ from .prompts import (
     OVERALL_ANALYSIS_TEMPLATE
 )
 
-def normalize_columns(df):
+def normalise_columns(df):
     df.columns = [
         col.strip().lower().replace(" ", "_").replace(".", "_").replace("-", "_")
         for col in df.columns
