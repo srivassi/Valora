@@ -8,6 +8,7 @@ COPY backend/ backend/
 COPY data/useful_database /data/useful_database
 COPY data/clean_fundamentals.csv /data/clean_fundamentals.csv
 COPY backend/requirements.txt /app/requirements.txt
+COPY data/useful_database/ratios.csv /data/useful_database/ratios.csv
 
 RUN pip install --no-cache-dir -r requirements.txt
 
