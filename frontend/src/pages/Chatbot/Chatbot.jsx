@@ -3,8 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import './Chatbot.css';
 import { marked } from 'marked';
 
-const apiUrl = import.meta.env.VITE_BACKEND_URL;
-console.log('VITE_BACKEND_URL:', import.meta.env.VITE_BACKEND_URL);
+const apiUrl = "https://valora-995650517009.europe-west1.run.app"
 
 export default function Chatbot() {
   const navigate = useNavigate();
