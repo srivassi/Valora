@@ -11,4 +11,4 @@ COPY backend/requirements.txt /app/requirements.txt
 
 RUN pip install --no-cache-dir -r requirements.txt
 
-CMD ["uvicorn", "services.chatbot:app", "--host", "0.0.0.0", "--port", "8080"]
+CMD ["uvicorn", "backend.services.chatbot:app", "--host", "0.0.0.0", "--port", "8080"]
