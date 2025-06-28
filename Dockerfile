@@ -4,7 +4,7 @@ FROM python:3.11-slim
 WORKDIR /app
 ENV PYTHONPATH=/app
 
-COPY backend/ .
+COPY backend/ backend/
 COPY data/useful_database /data/useful_database
 COPY data/clean_fundamentals.csv /data/clean_fundamentals.csv
 COPY backend/requirements.txt /app/requirements.txt
