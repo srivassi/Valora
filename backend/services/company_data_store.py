@@ -11,7 +11,9 @@ print("🔎 USEFUL_DB resolves to:", USEFUL_DB)
 def load_ratios():
     full_path = os.path.join(USEFUL_DB, "ratios.csv")
     print("📂 Trying to load:", full_path)
-    return pd.read_csv(full_path)
+    df = pd.read_csv(full_path)
+    print("✅ Ratios loaded:", df.shape)
+    return df
 
 # 📂 Load company name mappings
 def load_company_names():
@@ -24,7 +26,9 @@ def load_company_names():
 def load_anomalies():
     path = os.path.join(USEFUL_DB, "anomalies.csv")
     print("📂 Loading anomalies:", path)
-    return pd.read_csv(path)
+    df = pd.read_csv(path)
+    print("✅ Anomalies loaded:", df.shape)
+    return df
 
 # 📂 Load TAAPI hypothesis test results
 def load_taapi_results(ticker):
@@ -36,10 +40,17 @@ def load_taapi_results(ticker):
 
 # 📂 Load basic stock data
 def load_stock_data(ticker):
-    path = os.path.join(USEFUL_DB, "stock_data", f"{ticker}.csv")
-    if os.path.exists(path):
-        return pd.read_csv(path)
+    folder = os.path.join(USEFUL_DB, "stock_data")
+    # Try the specific file first
+    exact_path = os.path.join(folder, f"{ticker}.csv")
+    if os.path.exists(exact_path):
+        return pd.read_csv(exact_path)
+    # Fallback: find a file that starts with ticker (e.g., AAPL_2018_2024.csv)
+    for file in os.listdir(folder):
+        if file.startswith(ticker + "_") and file.endswith(".csv"):
+            return pd.read_csv(os.path.join(folder, file))
     return pd.DataFrame()
+
 
 # 📂 Load historical stock features
 def load_historical_features(ticker):
@@ -53,6 +64,7 @@ def build_company_data():
     ratios = load_ratios()
     anomalies = load_anomalies()
 
+    # ✅ Merge ratios and anomalies
     merged = pd.merge(
         ratios,
         anomalies,
@@ -61,8 +73,16 @@ def build_company_data():
         suffixes=('', '_anomaly')
     )
 
+    print("📊 Merged dataframe shape:", merged.shape)
+    if "Ticker.Symbol" not in merged.columns:
+        print("❌ ERROR: 'Ticker.Symbol' column missing from merged data")
+        return {}
+
+    tickers = merged["Ticker.Symbol"].dropna().unique()
+    print("🔎 Found tickers:", tickers)
+
     companies = {}
-    for ticker in merged["Ticker.Symbol"].dropna().unique():
+    for ticker in tickers:
         company_data = merged[merged["Ticker.Symbol"] == ticker].to_dict(orient="records")
         taapi = load_taapi_results(ticker)
         stock = load_stock_data(ticker)
@@ -75,6 +95,7 @@ def build_company_data():
             "historical_features": hist_features.replace({np.nan: None}).to_dict(orient="records") if not hist_features.empty else []
         }
 
+    print("✅ Loaded companies:", list(companies.keys()))
     return companies
 
 # ✅ Dev testing only
