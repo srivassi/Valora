@@ -12,7 +12,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 
-from services.prompt_generator import (
+from backend.services.prompt_generator import (
     generate_ratio_prompt,
     generate_anomaly_prompt,
     generate_enhanced_hypothesis_prompt,
