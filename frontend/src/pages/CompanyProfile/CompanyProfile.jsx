@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './CompanyProfile.css';
-import companyData from '../../data/useful_database/company_bubbles.json';
+import companyData from '../../data/company_bubbles.json';
 
 const industries = ["All", ...Array.from(new Set(companyData.map(c => c.industry)))];
 
