@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import './Chatbot.css';
 import { marked } from 'marked';
 
-const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+const apiUrl = import.meta.env.VITE_BACKEND_URL || 'http://localhost:8000';
 
 export default function Chatbot() {
   const navigate = useNavigate();
@@ -24,7 +24,7 @@ export default function Chatbot() {
 
   const fetchSuggestions = async () => {
     try {
-      const res = await fetch('http://localhost:8000/chat/suggestions');
+      const res = await fetch(`${apiUrl}/chat/suggestions`);
       const data = await res.json();
       setSuggestions(data.suggestions || []);
       setShowSuggestions(true);
