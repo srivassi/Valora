@@ -11,5 +11,6 @@ COPY backend/requirements.txt /app/requirements.txt
 COPY data/useful_database/ratios.csv /app/data/useful_database/ratios.csv
 
 RUN pip install --no-cache-dir -r requirements.txt
+RUN python -m spacy download en_core_web_sm
 
 CMD ["uvicorn", "backend.services.chatbot:app", "--host", "0.0.0.0", "--port", "8080"]
