@@ -4,6 +4,7 @@ import './Chatbot.css';
 import { marked } from 'marked';
 
 const apiUrl = import.meta.env.VITE_BACKEND_URL;
+console.log('VITE_BACKEND_URL:', import.meta.env.VITE_BACKEND_URL);
 
 export default function Chatbot() {
   const navigate = useNavigate();
