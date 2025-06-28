@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import './Chatbot.css';
 import { marked } from 'marked';
 
-const apiUrl = import.meta.env.VITE_BACKEND_URL || 'http://localhost:8000';
+const apiUrl = import.meta.env.VITE_BACKEND_URL;
 
 export default function Chatbot() {
   const navigate = useNavigate();

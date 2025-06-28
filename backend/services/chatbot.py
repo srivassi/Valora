@@ -41,7 +41,7 @@ company_list = load_company_names()
 symbol_to_name = {item['symbol'].upper(): item['name'] for item in company_list}
 name_to_symbol = {item['name'].lower(): item['symbol'].upper() for item in company_list}
 valid_tickers = set(get_unique_tickers())
-API_BASE = "http://localhost:8000"
+API_BASE = "https://valora-995650517009.europe-west1.run.app"
 
 # === Utils ===
 def resolve_ticker(user_input: str) -> str:
