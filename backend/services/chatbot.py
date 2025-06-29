@@ -156,16 +156,15 @@ async def chat(request: ChatRequest):
             ticker1 = resolve_ticker(parts[0])
             ticker2 = resolve_ticker(parts[1])
             if not ticker1 or not ticker2:
-                return {"reply": f"❌ Invalid or unsupported tickers. Try one from the list like: {', '.join(sorted(list(valid_tickers)[:5]))}..."}
+                return {
+                    "reply": f"❌ Invalid or unsupported tickers. Try one from the list like: {', '.join(sorted(list(valid_tickers)[:5]))}..."}
             df = normalise_columns(pd.read_csv("data/useful_database/ratios.csv"))
             comparison_df = df[df["ticker_symbol"].isin([ticker1, ticker2])]
             if comparison_df.empty:
                 return {"reply": "⚠️ No comparison data found for those tickers."}
             summary = comparison_df.to_string(index=False)
-                return {"reply": "❌ Invalid or unsupported tickers."}
-            df = normalise_columns(pd.read_csv("data/useful_database/ratios.csv"))
-            summary = df[df["ticker_symbol"].isin([ticker1, ticker2])].to_string(index=False)
-            prompt = generate_prompt(prompt_type, question=question, ticker1=ticker1, ticker2=ticker2, comparison_summary=summary)
+            prompt = generate_prompt(prompt_type, question=question, ticker1=ticker1, ticker2=ticker2,
+                                     comparison_summary=summary)
 
         else:
             if prompt_type != "anomalies":
