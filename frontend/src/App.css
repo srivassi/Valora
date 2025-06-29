@@ -260,5 +260,15 @@ html {
   font-family: 'Poppins', sans-serif;
 }
 
+.chatbot-footer a {
+  color: #fff;
+  text-decoration: none;
+}
+
+.chatbot-footer a:hover {
+  text-decoration: underline;
+  color: #ded5e8;
+}
+
 
 
