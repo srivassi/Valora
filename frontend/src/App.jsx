@@ -77,8 +77,12 @@ function LandingPage() {
                     </button>
 
                     <footer className="chatbot-footer">
-                        <span>Look Under the Hood</span>
-                        <span>About TCS</span>
+                        <a
+                            href="https://valoranalytics-995650517009.europe-west1.run.app">Look Under the Hood</a>
+                        <a href="https://www.tcs.com/what-we-do/products-platforms/tcs-bfsi-platforms" target="_blank"
+                           rel="noopener noreferrer">
+                            About TCS
+                        </a>
                     </footer>
                 </section>
             </div>
