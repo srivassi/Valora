@@ -24,14 +24,20 @@ def generate_ratios(input_file):
     # Filter and clean
     df_ratios = df[required_columns].copy()
     df_ratios.replace([np.inf, -np.inf], np.nan, inplace=True)
-    df_ratios.dropna(inplace=True)
+    df_ratios.fillna(-9999, inplace=True)
 
     print(f"✅ Cleaned data shape: {df_ratios.shape}")
 
-    # Scale numeric columns
-    scaler = StandardScaler()
+    # Scale numeric columns, but skip -9999 values
     numeric = df_ratios.iloc[:, 2:]
-    scaled = scaler.fit_transform(numeric)
+    mask = numeric != -9999
+    scaled = numeric.copy()
+    scaler = StandardScaler()
+    # Fit only on valid values
+    scaled_values = scaler.fit_transform(numeric.where(mask, np.nan))
+    # Put back -9999 where appropriate
+    scaled[:] = np.where(mask, scaled_values, -9999)
+
     df_scaled = pd.DataFrame(scaled, columns=numeric.columns)
 
     # Reattach identifier columns
@@ -42,8 +48,8 @@ def generate_ratios(input_file):
 
 
 if __name__ == "__main__":
-    input_path = "C:/Users/priya/OneDrive/Desktop/tcs/Valora/data/clean_fundamentals.csv"
-    output_path = "data/useful_database/ratios.csv"
+    input_path = "C:/Users/Siddh/OneDrive/TR033 Materials/Year 2/Summer/TCS/Valora/data/clean_fundamentals.csv"
+    output_path = "../../../data/useful_database/ratios.csv"
 
     # Ensure directory exists
     os.makedirs(os.path.dirname(output_path), exist_ok=True)
