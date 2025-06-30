@@ -48,7 +48,7 @@ def generate_ratios(input_file):
 
 
 if __name__ == "__main__":
-    input_path = "C:/Users/Siddh/OneDrive/TR033 Materials/Year 2/Summer/TCS/Valora/data/clean_fundamentals.csv"
+    input_path = "C:/Users/priya/OneDrive/Desktop/tcs/Valora/data/clean_fundamentals.csv"
     output_path = "../../../data/useful_database/ratios.csv"
 
     # Ensure directory exists
