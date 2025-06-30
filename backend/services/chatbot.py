@@ -12,10 +12,8 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from rapidfuzz.fuzz import partial_ratio
 
-from backend.services.prompt_generator import generate_prompt, normalise_columns
 
-from backend.services.company_data_store import load_company_names
-from backend.services.prompt_generator import generate_prompt, normalize_columns
+from backend.services.prompt_generator import generate_prompt, normalise_columns
 from backend.services.company_data_store import load_company_names, safe_load_company_info
 from backend.utils.ticker_loader import get_unique_tickers
 from backend.services.api.company_data_api import router as company_data_router
