@@ -1,0 +1,16 @@
+[
+  {
+    "value_col": "net_margin",
+    "mean_1": 0.12,
+    "mean_2": 0.18,
+    "t_statistic": 2.35,
+    "p_value": 0.021
+  },
+  {
+    "value_col": "debt_equity",
+    "mean_1": 1.8,
+    "mean_2": 1.1,
+    "t_statistic": -2.9,
+    "p_value": 0.004
+  }
+]

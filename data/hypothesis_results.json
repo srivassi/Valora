@@ -1,0 +1,18 @@
+[
+  {
+    "value_col": "roa",
+    "group_col": "anomaly",
+    "group1": 1,
+    "group2": 0,
+    "t_stat": -1.4547483162599568,
+    "p_val": 0.14606583090662942
+  },
+  {
+    "value_col": "debt_equity",
+    "group_col": "year",
+    "group1": 2020,
+    "group2": 2023,
+    "t_stat": NaN,
+    "p_val": NaN
+  }
+]
