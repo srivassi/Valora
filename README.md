@@ -49,3 +49,4 @@ Valora is a full-stack application for financial data analysis and chatbot inter
 ## License
 
 This project is for educational and internal use.
+
